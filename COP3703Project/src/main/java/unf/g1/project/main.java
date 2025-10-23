@@ -15,9 +15,30 @@ package unf.g1.project;
  *
  * @author jakez
  */
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+
 public class main {
 
     public static void main(String[] args) {
+        try {
+            Connection conn = DriverManager.getConnection(
+                "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl", 
+                "n01412726", 
+                "pass"
+            );
+
+            System.out.println("it worked?");
+        } 
+        catch (Exception e) {
+            System.out.println("\n\n\n\n" + e.getMessage()+ "\n\n\n\n");
+        }
+
+   
+
+
         System.out.println("Hello COP3703!");
     }
 }
