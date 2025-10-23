@@ -26,8 +26,8 @@ public class main {
         try {
             Connection conn = DriverManager.getConnection(
                 "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl", 
-                "n01412726", 
-                "pass"
+                "G01", 
+                "r9Qi0oVD"
             );
 
             System.out.println("it worked?");
