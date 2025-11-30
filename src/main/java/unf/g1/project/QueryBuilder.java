@@ -22,6 +22,8 @@ public class QueryBuilder {
         return buildInsert(model.getTableName(), data);
     }
 
+
+
     /**
      * Builds an INSERT statement from table name and data map
      *
@@ -40,7 +42,7 @@ public class QueryBuilder {
                 values.append(", ");
             }
             columns.append(column);
-            values.append("?");
+            values.append(data.get(column));
             count++;
         }
 
@@ -142,6 +144,8 @@ public class QueryBuilder {
                "LEFT JOIN Department dept ON d.dept_code = dept.dept_code " +
                "WHERE p.patient_id = ?";
     }
+
+
 
     /**
      * Builds query to get all procedures for a patient
