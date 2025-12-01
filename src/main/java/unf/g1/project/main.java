@@ -19,6 +19,7 @@ package unf.g1.project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 
 public class main {
@@ -44,12 +45,12 @@ public class main {
         try {
             Connection conn = DriverManager.getConnection(
                 "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl", 
-                "n01412726", //G01
-                "0674" //r9Qi0oVD
+                "G01", 
+                "r9Qi0oVD" 
             );
             return conn;
         } 
-        catch (Exception e) {
+        catch (SQLException e) {
             System.out.println("\n\n\n\n" + e.getMessage()+ "\n\n\n\n");
             return null;
         }

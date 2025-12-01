@@ -1,4 +1,4 @@
-//This file is for interfacing with the DBMS using CRUD operations and is responsible for building SQL queries
+//This file is for interfacing with the DBMS using CRUD operations
 package unf.g1.project;
 
 import java.sql.Connection;
@@ -256,35 +256,34 @@ public class DatabaseManager {
         String proceduresQuery = QueryBuilder.buildPatientProceduresQuery();
         try (PreparedStatement pstmt = connection.prepareStatement(proceduresQuery)) {
             pstmt.setString(1, patientId);
-            ResultSet rs = pstmt.executeQuery();
-
-            boolean hasProcedures = false;
-            while (rs.next()) {
-                hasProcedures = true;
-                report.append("• Procedure: ").append(rs.getString("procedure_name"))
-                      .append(" (").append(rs.getString("procedure_no")).append(")\n");
-                report.append("  Date: ").append(formatDateTime(rs.getTimestamp("performed_at"))).append("\n");
-
-                String docId = rs.getString("doctor_id");
-                String docName = rs.getString("doctor_name");
-                if (docName != null) {
-                    report.append("  Doctor: ").append(docName);
-                    if (docId != null) {
-                        report.append(" (D").append(docId).append(")");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                boolean hasProcedures = false;
+                while (rs.next()) {
+                    hasProcedures = true;
+                    report.append("• Procedure: ").append(rs.getString("procedure_name"))
+                            .append(" (").append(rs.getString("procedure_no")).append(")\n");
+                    report.append("  Date: ").append(formatDateTime(rs.getTimestamp("performed_at"))).append("\n");
+                    
+                    String docId = rs.getString("doctor_id");
+                    String docName = rs.getString("doctor_name");
+                    if (docName != null) {
+                        report.append("  Doctor: ").append(docName);
+                        if (docId != null) {
+                            report.append(" (D").append(docId).append(")");
+                        }
+                        report.append("\n");
+                    }
+                    
+                    String notes = rs.getString("notes");
+                    if (notes != null && !notes.isEmpty()) {
+                        report.append("  Notes: ").append(notes).append("\n");
                     }
                     report.append("\n");
                 }
-
-                String notes = rs.getString("notes");
-                if (notes != null && !notes.isEmpty()) {
-                    report.append("  Notes: ").append(notes).append("\n");
+                if (!hasProcedures) {
+                    report.append("No procedures recorded.\n\n");
                 }
-                report.append("\n");
             }
-            if (!hasProcedures) {
-                report.append("No procedures recorded.\n\n");
-            }
-            rs.close();
         }
 
         // Interactions Section
@@ -292,24 +291,23 @@ public class DatabaseManager {
         String interactionsQuery = QueryBuilder.buildPatientInteractionsQuery();
         try (PreparedStatement pstmt = connection.prepareStatement(interactionsQuery)) {
             pstmt.setString(1, patientId);
-            ResultSet rs = pstmt.executeQuery();
-
-            boolean hasInteractions = false;
-            while (rs.next()) {
-                hasInteractions = true;
-                report.append("• Interaction ID: ").append(rs.getString("interaction_id")).append("\n");
-                report.append("  Time: ").append(formatDateTime(rs.getTimestamp("interactionTime"))).append("\n");
-
-                String description = rs.getString("description");
-                if (description != null && !description.isEmpty()) {
-                    report.append("  Description: ").append(description).append("\n");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                boolean hasInteractions = false;
+                while (rs.next()) {
+                    hasInteractions = true;
+                    report.append("• Interaction ID: ").append(rs.getString("interaction_id")).append("\n");
+                    report.append("  Time: ").append(formatDateTime(rs.getTimestamp("interactionTime"))).append("\n");
+                    
+                    String description = rs.getString("description");
+                    if (description != null && !description.isEmpty()) {
+                        report.append("  Description: ").append(description).append("\n");
+                    }
+                    report.append("\n");
                 }
-                report.append("\n");
+                if (!hasInteractions) {
+                    report.append("No interactions recorded.\n\n");
+                }
             }
-            if (!hasInteractions) {
-                report.append("No interactions recorded.\n\n");
-            }
-            rs.close();
         }
 
         // Medications Section
@@ -317,35 +315,34 @@ public class DatabaseManager {
         String medicationsQuery = QueryBuilder.buildPatientMedicationsQuery();
         try (PreparedStatement pstmt = connection.prepareStatement(medicationsQuery)) {
             pstmt.setString(1, patientId);
-            ResultSet rs = pstmt.executeQuery();
-
-            boolean hasMedications = false;
-            while (rs.next()) {
-                hasMedications = true;
-                report.append("• Medication: ").append(rs.getString("medName")).append("\n");
-
-                String description = rs.getString("description");
-                if (description != null && !description.isEmpty()) {
-                    report.append("  Description: ").append(description).append("\n");
-                }
-
-                report.append("  Prescribed: ").append(formatDate(rs.getDate("datePres"))).append("\n");
-
-                String docId = rs.getString("doctor_id");
-                String docName = rs.getString("prescribing_doctor");
-                if (docName != null) {
-                    report.append("  Prescribing Doctor: ").append(docName);
-                    if (docId != null) {
-                        report.append(" (D").append(docId).append(")");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                boolean hasMedications = false;
+                while (rs.next()) {
+                    hasMedications = true;
+                    report.append("• Medication: ").append(rs.getString("medName")).append("\n");
+                    
+                    String description = rs.getString("description");
+                    if (description != null && !description.isEmpty()) {
+                        report.append("  Description: ").append(description).append("\n");
+                    }
+                    
+                    report.append("  Prescribed: ").append(formatDate(rs.getDate("datePres"))).append("\n");
+                    
+                    String docId = rs.getString("doctor_id");
+                    String docName = rs.getString("prescribing_doctor");
+                    if (docName != null) {
+                        report.append("  Prescribing Doctor: ").append(docName);
+                        if (docId != null) {
+                            report.append(" (D").append(docId).append(")");
+                        }
+                        report.append("\n");
                     }
                     report.append("\n");
                 }
-                report.append("\n");
+                if (!hasMedications) {
+                    report.append("No medications prescribed.\n\n");
+                }
             }
-            if (!hasMedications) {
-                report.append("No medications prescribed.\n\n");
-            }
-            rs.close();
         }
 
         report.append("================== END OF REPORT ==================\n");

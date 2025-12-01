@@ -1,23 +1,32 @@
 package unf.g1.project;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+
+import unf.g1.project.models.Department;
+import unf.g1.project.models.Doctor;
+import unf.g1.project.models.Interaction;
+import unf.g1.project.models.Medication;
 import unf.g1.project.models.Patient;
+import unf.g1.project.models.Prescribed;
+import unf.g1.project.models.Procedure;
+import unf.g1.project.models.ProcedurePerformed;
 
 public class Gui {
     JFrame mainWindow;
-    JFrame addWindow;  // Track the add window
+    JFrame addWindow;  
     JFrame searchWindow;
     JFrame reportsWindow;
     JTextArea mainTextArea;
 
     // Database connection
-    private Connection connection;
+    private final Connection connection;
 
     // Date formatters for consistent date display
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -977,7 +986,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Patient ID* (8 chars):"), constraints);
+        forms.add(new JLabel("Patient ID*"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -989,7 +998,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Interaction ID* (8 chars):"), constraints);
+        forms.add(new JLabel("Interaction ID*"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1041,7 +1050,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Procedure Number* (7 chars):"), constraints);
+        forms.add(new JLabel("Procedure Number* "), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1053,7 +1062,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Patient ID* (8 chars):"), constraints);
+        forms.add(new JLabel("Patient ID*"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1065,7 +1074,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Doctor ID* (8 chars):"), constraints);
+        forms.add(new JLabel("Doctor ID*"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1117,7 +1126,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Patient ID* (8 chars):"), constraints);
+        forms.add(new JLabel("Patient ID*:"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1129,7 +1138,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Doctor ID* (8 chars):"), constraints);
+        forms.add(new JLabel("Doctor ID*:"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1141,7 +1150,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Medication Name* (20 chars):"), constraints);
+        forms.add(new JLabel("Medication Name*:"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -1180,32 +1189,15 @@ public class Gui {
         }
 
         switch (currentFormType) {
-            case "patient":
-                submitPatient();
-                break;
-            case "doctor":
-                submitDoctor();
-                break;
-            case "department":
-                submitDepartment();
-                break;
-            case "procedure":
-                submitProcedure();
-                break;
-            case "medication":
-                submitMedication();
-                break;
-            case "interaction":
-                submitInteraction();
-                break;
-            case "procedurePerformed":
-                submitProcedurePerformed();
-                break;
-            case "prescription":
-                submitPrescription();
-                break;
-            default:
-                JOptionPane.showMessageDialog(addWindow,
+            case "patient" -> submitPatient();
+            case "doctor" -> submitDoctor();
+            case "department" -> submitDepartment();
+            case "procedure" -> submitProcedure();
+            case "medication" -> submitMedication();
+            case "interaction" -> submitInteraction();
+            case "procedurePerformed" -> submitProcedurePerformed();
+            case "prescription" -> submitPrescription();
+            default -> JOptionPane.showMessageDialog(addWindow,
                     "Unknown form type: " + currentFormType,
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -1311,7 +1303,6 @@ public class Gui {
                 "Error inserting patient: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1320,7 +1311,7 @@ public class Gui {
      */
     private void submitDoctor() {
         try {
-            unf.g1.project.models.Doctor doctor = new unf.g1.project.models.Doctor();
+            Doctor doctor = new Doctor();
             doctor.setDoctorId(doctorIdField.getText().trim());
             doctor.setFirstName(docFNameField.getText().trim());
 
@@ -1374,7 +1365,6 @@ public class Gui {
                 "Error inserting doctor: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1383,7 +1373,7 @@ public class Gui {
      */
     private void submitDepartment() {
         try {
-            unf.g1.project.models.Department dept = new unf.g1.project.models.Department();
+            Department dept = new Department();
 
             dept.setDeptCode(deptCodeField.getText().trim());
             dept.setDeptName(deptNameField.getText().trim());
@@ -1416,7 +1406,6 @@ public class Gui {
                 "Error inserting department: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1435,7 +1424,7 @@ public class Gui {
                 return;
             }
 
-            unf.g1.project.models.Procedure proc = new unf.g1.project.models.Procedure();
+            Procedure proc = new Procedure();
 
             proc.setProcedureNo(procNoField.getText().trim());
             proc.setProcedureName(procNameField.getText().trim());
@@ -1490,7 +1479,6 @@ public class Gui {
                         "\nYou may need to manually link this procedure to a department.",
                         "Partial Success",
                         JOptionPane.WARNING_MESSAGE);
-                    e.printStackTrace();
                 }
             }
 
@@ -1504,7 +1492,6 @@ public class Gui {
                 "Error inserting procedure: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1513,7 +1500,7 @@ public class Gui {
      */
     private void submitMedication() {
         try {
-            unf.g1.project.models.Medication med = new unf.g1.project.models.Medication();
+            Medication med = new Medication();
 
             med.setMedName(medNameField.getText().trim());
             med.setManufacturer(medManufacturerField.getText().trim());
@@ -1543,7 +1530,6 @@ public class Gui {
                 "Error inserting medication: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1552,7 +1538,7 @@ public class Gui {
      */
     private void submitInteraction() {
         try {
-            unf.g1.project.models.Interaction interaction = new unf.g1.project.models.Interaction();
+            Interaction interaction = new Interaction();
 
             interaction.setPatintId(intPatientIdField.getText().trim());
 
@@ -1604,7 +1590,6 @@ public class Gui {
                 "Error inserting interaction: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1613,7 +1598,7 @@ public class Gui {
      */
     private void submitProcedurePerformed() {
         try {
-            unf.g1.project.models.ProcedurePerformed procPerf = new unf.g1.project.models.ProcedurePerformed();
+            ProcedurePerformed procPerf = new ProcedurePerformed();
 
             procPerf.setProcedureNo(perfProcNoField.getText().trim());
             procPerf.setPatientId(perfPatientIdField.getText().trim());
@@ -1657,7 +1642,6 @@ public class Gui {
                 "Error inserting procedure performed: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1666,7 +1650,7 @@ public class Gui {
      */
     private void submitPrescription() {
         try {
-            unf.g1.project.models.Prescribed prescription = new unf.g1.project.models.Prescribed();
+            Prescribed prescription = new Prescribed();
 
             prescription.setpId(presPatientIdField.getText().trim());
             prescription.setdId(presDocIdField.getText().trim());
@@ -1708,7 +1692,6 @@ public class Gui {
                 "Error inserting prescription: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -1975,7 +1958,7 @@ public class Gui {
             String patientId = searchPatientIdField.getText().trim();
             String name = searchPatientNameField.getText().trim();
 
-            System.out.println("DEBUG: Searching for patient - ID: '" + patientId + "', Name: '" + name + "'");
+            
 
             if (patientId.isEmpty() && name.isEmpty()) {
                 JOptionPane.showMessageDialog(searchWindow,
@@ -1987,14 +1970,13 @@ public class Gui {
 
             // Use DatabaseManager to execute the search
             java.sql.ResultSet rs = DatabaseManager.searchPatient(connection, patientId, name);
-            System.out.println("DEBUG: ResultSet obtained");
 
             StringBuilder results = new StringBuilder("Search Results:\n\n");
             int count = 0;
 
             while (rs.next()) {
                 count++;
-                System.out.println("DEBUG: Found patient: " + rs.getString("patientID"));
+                
                 results.append("Patient ID: ").append("P").append(rs.getString("patientID")).append("\n");
                 results.append("Name: ").append(rs.getString("fName")).append(" ");
                 if (rs.getString("mInitial") != null) {
@@ -2009,7 +1991,7 @@ public class Gui {
                 results.append("----------------------------------------\n");
             }
 
-            System.out.println("DEBUG: Total patients found: " + count);
+           
 
             if (count == 0) {
                 results.append("No patients found matching the criteria.");
@@ -2018,16 +2000,14 @@ public class Gui {
             }
 
             mainTextArea.setText(results.toString());
-            System.out.println("DEBUG: Results displayed in text area");
+            
             rs.close();
 
         } catch (Exception e) {
-            System.err.println("DEBUG: Exception occurred: " + e.getMessage());
             JOptionPane.showMessageDialog(searchWindow,
                 "Error searching patients: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -2085,7 +2065,6 @@ public class Gui {
                 "Error searching doctors: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -2135,7 +2114,6 @@ public class Gui {
                 "Error searching departments: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
     }
 
@@ -2208,19 +2186,19 @@ public class Gui {
     private void showPatientHealthRecordForm(Container inputContainer, JTextArea reportArea) {
         inputContainer.removeAll();
         inputContainer.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(5, 10, 5, 10);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        inputContainer.add(new JLabel("Patient ID (8 chars):"), gbc);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        inputContainer.add(new JLabel("Patient ID:"), constraints);
 
-        gbc.gridx = 1;
+        constraints.gridx = 1;
         JTextField patientIdField = new JTextField(15);
-        inputContainer.add(patientIdField, gbc);
+        inputContainer.add(patientIdField, constraints);
 
-        gbc.gridx = 2;
+        constraints.gridx = 2;
         JButton generateButton = new JButton("Generate Report");
         generateButton.addActionListener(e -> {
             String patientId = patientIdField.getText().trim();
@@ -2236,15 +2214,14 @@ public class Gui {
                 String report = DatabaseManager.generatePatientHealthRecord(connection, patientId);
                 reportArea.setText(report);
                 reportArea.setCaretPosition(0);  // Scroll to top
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(reportsWindow,
                     "Error generating report: " + ex.getMessage(),
                     "Database Error",
                     JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
             }
         });
-        inputContainer.add(generateButton, gbc);
+        inputContainer.add(generateButton, constraints);
 
         inputContainer.revalidate();
         inputContainer.repaint();
@@ -2254,19 +2231,19 @@ public class Gui {
     private void showProceduresByDepartmentForm(Container inputContainer, JTextArea reportArea) {
         inputContainer.removeAll();
         inputContainer.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(5, 10, 5, 10);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        inputContainer.add(new JLabel("Department Code or Name:"), gbc);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        inputContainer.add(new JLabel("Department Code or Name:"), constraints);
 
-        gbc.gridx = 1;
+        constraints.gridx = 1;
         JTextField deptSearchField = new JTextField(15);
-        inputContainer.add(deptSearchField, gbc);
+        inputContainer.add(deptSearchField, constraints);
 
-        gbc.gridx = 2;
+        constraints.gridx = 2;
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(e -> {
             String searchTerm = deptSearchField.getText().trim();
@@ -2312,15 +2289,14 @@ public class Gui {
                 reportArea.setCaretPosition(0);
                 rs.close();
 
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(reportsWindow,
                     "Error searching procedures: " + ex.getMessage(),
                     "Database Error",
                     JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
             }
         });
-        inputContainer.add(searchButton, gbc);
+        inputContainer.add(searchButton, constraints);
 
         inputContainer.revalidate();
         inputContainer.repaint();
@@ -2330,19 +2306,19 @@ public class Gui {
     private void showProceduresByDoctorForm(Container inputContainer, JTextArea reportArea) {
         inputContainer.removeAll();
         inputContainer.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(5, 10, 5, 10);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        inputContainer.add(new JLabel("Doctor ID:"), gbc);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        inputContainer.add(new JLabel("Doctor ID:"), constraints);
 
-        gbc.gridx = 1;
+        constraints.gridx = 1;
         JTextField doctorIdField = new JTextField(15);
-        inputContainer.add(doctorIdField, gbc);
+        inputContainer.add(doctorIdField, constraints);
 
-        gbc.gridx = 2;
+        constraints.gridx = 2;
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(e -> {
             String doctorId = doctorIdField.getText().trim();
@@ -2393,15 +2369,14 @@ public class Gui {
                 reportArea.setCaretPosition(0);
                 rs.close();
 
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(reportsWindow,
                     "Error searching procedures: " + ex.getMessage(),
                     "Database Error",
                     JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
             }
         });
-        inputContainer.add(searchButton, gbc);
+        inputContainer.add(searchButton, constraints);
 
         inputContainer.revalidate();
         inputContainer.repaint();
