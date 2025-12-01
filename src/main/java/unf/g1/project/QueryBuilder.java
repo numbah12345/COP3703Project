@@ -42,7 +42,7 @@ public class QueryBuilder {
                 values.append(", ");
             }
             columns.append(column);
-            values.append(data.get(column));
+            values.append("?");  // Use ? placeholder for PreparedStatement
             count++;
         }
 

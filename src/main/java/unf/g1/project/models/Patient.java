@@ -2,6 +2,7 @@ package unf.g1.project.models;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.Date;
 
 /**
  * Patient model representing a hospital patient
@@ -11,39 +12,52 @@ public class Patient extends Model {
     private String fName;               // First name (varchar(15))
     private Character mInitial;         // Middle initial (char)
     private String lName;               // Last name (varchar(20))
-    private String patientID;           // Patient ID (char(8))
-    private String ssn;                 // Primary key: SSN (char(9))
-    private Character condition;        // Condition: F=Fair, C=Critical, S=Stable
-    private Character sex;              // Sex: F=Female, M=Male, O=Other
-    private String phoneNumber;        // Phone number (10 digits)
+    private String patientID;           // Patient ID (char(8)) - PRIMARY KEY
+    private String ssn;                 // SSN (char(9))
+    private String curPhoneNo;          // Current phone number (char(10))
+    private String curAddress;          // Current address (VARCHAR2(50))
     private String curCity;             // Current city (char(15))
     private Integer curZip;             // Current zip code
     private String curState;            // Current state (char(15))
+    private String perPhoneNo;          // Permanent phone number (char(10))
+    private String perAddress;          // Permanent address (VARCHAR2(50))
     private String perCity;             // Permanent city (char(15))
     private Integer perZip;             // Permanent zip code
     private String perState;            // Permanent state (char(15))
+    private Date bDate;                 // Birth date
+    private Character sex;              // Sex: F=Female, M=Male, O=Other
+    private Character condition;        // Condition: F=Fair, C=Critical, S=Stable
+    private String priDoc;              // Primary doctor ID (VARCHAR2(12))
+    private String secDoc;              // Secondary doctor ID (VARCHAR2(12))
 
     // Constructors
     public Patient() {}
 
     public Patient(String fName, Character mInitial, String lName, String patientID,
-                   String ssn, Character condition, Character sex, String phoneNumber,
-                   String curCity, Integer curZip, String curState,
-                   String perCity, Integer perZip, String perState) {
+                   String ssn, String curPhoneNo, String curAddress, String curCity,
+                   Integer curZip, String curState, String perPhoneNo, String perAddress,
+                   String perCity, Integer perZip, String perState, Date bDate,
+                   Character sex, Character condition, String priDoc, String secDoc) {
         this.fName = fName;
         this.mInitial = mInitial;
         this.lName = lName;
         this.patientID = patientID;
         this.ssn = ssn;
-        this.condition = condition;
-        this.sex = sex;
-        this.phoneNumber = phoneNumber;
+        this.curPhoneNo = curPhoneNo;
+        this.curAddress = curAddress;
         this.curCity = curCity;
         this.curZip = curZip;
         this.curState = curState;
+        this.perPhoneNo = perPhoneNo;
+        this.perAddress = perAddress;
         this.perCity = perCity;
         this.perZip = perZip;
         this.perState = perState;
+        this.bDate = bDate;
+        this.sex = sex;
+        this.condition = condition;
+        this.priDoc = priDoc;
+        this.secDoc = secDoc;
     }
 
     // Model implementation
@@ -54,12 +68,12 @@ public class Patient extends Model {
 
     @Override
     public String getPrimaryKeyColumn() {
-        return "ssn";
+        return "patientID";
     }
 
     @Override
     public Object getPrimaryKeyValue() {
-        return ssn;
+        return patientID;
     }
 
     @Override
@@ -70,15 +84,21 @@ public class Patient extends Model {
         map.put("lName", lName);
         map.put("patientID", patientID);
         map.put("ssn", ssn);
-        map.put("condition", condition);
-        map.put("sex", sex);
-        map.put("phoneNumber", phoneNumber);
+        map.put("curPhoneNo", curPhoneNo);
+        map.put("curAddress", curAddress);
         map.put("curCity", curCity);
         map.put("curZip", curZip);
         map.put("curState", curState);
+        map.put("perPhoneNo", perPhoneNo);
+        map.put("perAddress", perAddress);
         map.put("perCity", perCity);
         map.put("perZip", perZip);
         map.put("perState", perState);
+        map.put("bDate", bDate);
+        map.put("sex", sex);
+        map.put("condition", condition);
+        map.put("priDoc", priDoc);
+        map.put("secDoc", secDoc);
         return map;
     }
 
@@ -94,10 +114,16 @@ public class Patient extends Model {
         if (fName == null || lName == null) {
             return false;
         }
-        if (condition != null && condition != 'F' && condition != 'C' && condition != 'S') {
+        if (curPhoneNo == null || curPhoneNo.length() != 10) {
             return false;
         }
-        if (sex != null && sex != 'F' && sex != 'M' && sex != 'O') {
+        if (perPhoneNo == null || perPhoneNo.length() != 10) {
+            return false;
+        }
+        if (sex == null || (sex != 'F' && sex != 'M' && sex != 'O')) {
+            return false;
+        }
+        if (condition == null || (condition != 'F' && condition != 'C' && condition != 'S')) {
             return false;
         }
         return true;
@@ -119,14 +145,11 @@ public class Patient extends Model {
     public String getSsn() { return ssn; }
     public void setSsn(String ssn) { this.ssn = ssn; }
 
-    public Character getCondition() { return condition; }
-    public void setCondition(Character condition) { this.condition = condition; }
+    public String getCurPhoneNo() { return curPhoneNo; }
+    public void setCurPhoneNo(String curPhoneNo) { this.curPhoneNo = curPhoneNo; }
 
-    public Character getSex() { return sex; }
-    public void setSex(Character sex) { this.sex = sex; }
-
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public String getCurAddress() { return curAddress; }
+    public void setCurAddress(String curAddress) { this.curAddress = curAddress; }
 
     public String getCurCity() { return curCity; }
     public void setCurCity(String curCity) { this.curCity = curCity; }
@@ -137,6 +160,12 @@ public class Patient extends Model {
     public String getCurState() { return curState; }
     public void setCurState(String curState) { this.curState = curState; }
 
+    public String getPerPhoneNo() { return perPhoneNo; }
+    public void setPerPhoneNo(String perPhoneNo) { this.perPhoneNo = perPhoneNo; }
+
+    public String getPerAddress() { return perAddress; }
+    public void setPerAddress(String perAddress) { this.perAddress = perAddress; }
+
     public String getPerCity() { return perCity; }
     public void setPerCity(String perCity) { this.perCity = perCity; }
 
@@ -146,17 +175,36 @@ public class Patient extends Model {
     public String getPerState() { return perState; }
     public void setPerState(String perState) { this.perState = perState; }
 
+    public Date getbDate() { return bDate; }
+    public void setbDate(Date bDate) { this.bDate = bDate; }
+
+    public Character getSex() { return sex; }
+    public void setSex(Character sex) { this.sex = sex; }
+
+    public Character getCondition() { return condition; }
+    public void setCondition(Character condition) { this.condition = condition; }
+
+    public String getPriDoc() { return priDoc; }
+    public void setPriDoc(String priDoc) { this.priDoc = priDoc; }
+
+    public String getSecDoc() { return secDoc; }
+    public void setSecDoc(String secDoc) { this.secDoc = secDoc; }
+
     @Override
     public String toString() {
         return "Patient{" +
                 "patientID='" + patientID + '\'' +
                 ", name='" + fName + " " + mInitial + " " + lName + '\'' +
                 ", ssn='" + ssn + '\'' +
+                ", bDate=" + bDate +
                 ", sex=" + sex +
                 ", condition=" + condition +
-                ", phoneNumber=" + phoneNumber +
-                ", currentAddress='" + curCity + ", " + curState + " " + curZip + '\'' +
-                ", permanentAddress='" + perCity + ", " + perState + " " + perZip + '\'' +
+                ", curPhoneNo='" + curPhoneNo + '\'' +
+                ", currentAddress='" + curAddress + ", " + curCity + ", " + curState + " " + curZip + '\'' +
+                ", perPhoneNo='" + perPhoneNo + '\'' +
+                ", permanentAddress='" + perAddress + ", " + perCity + ", " + perState + " " + perZip + '\'' +
+                ", priDoc='" + priDoc + '\'' +
+                ", secDoc='" + secDoc + '\'' +
                 '}';
     }
 }

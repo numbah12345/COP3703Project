@@ -54,34 +54,30 @@ public class main {
     public static void main(String[] args) throws SQLException {
         System.out.println("Hello COP3703!");
 
-        Connection connection =null;
-
-        connection = connectToDB();
+        Connection connection = connectToDB();
         if (connection != null) {
             System.out.println("Connection success!");
         }
         else {
             System.out.println("Connection failed!");
+            return;
         }
 
-
-        
-        Gui gui = new Gui();
+        Gui gui = new Gui(connection);
         /*TODO:
-        Create the rest of the models    
-        Connect add gui to models 
-        Create search gui 
+        Connect add gui to models
+        Create search gui
         */
 
     }
 
 
-    static Connection connectToDB() {
+    public static Connection connectToDB() {
         try {
             Connection conn = DriverManager.getConnection(
                 "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl", 
-                "G01", 
-                "r9Qi0oVD"
+                "n01412726", //G01
+                "0674" //r9Qi0oVD
             );
 
             System.out.println("it worked?");
