@@ -136,7 +136,7 @@ public class Doctor extends Model {
     @Override
     public String toString() {
         return "Doctor{" +
-                "doctorId='" + doctorId + '\'' +
+                "doctorId=D'" + doctorId + '\'' +
                 ", name='" + firstName + " " + lastName + '\'' +
                 ", ssn='" + ssn + '\'' +
                 ", bDate=" + bDate +

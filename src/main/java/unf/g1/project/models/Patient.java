@@ -104,28 +104,62 @@ public class Patient extends Model {
 
     @Override
     public boolean validate() {
-        // Basic validation
+        System.out.println("DEBUG Patient.validate(): Starting validation");
+
+        // Patient ID validation
+        System.out.println("DEBUG Patient.validate(): patientID = '" + patientID + "' (length: " +
+                         (patientID == null ? "null" : patientID.length()) + ")");
         if (patientID == null || patientID.length() != 8) {
+            System.out.println("DEBUG Patient.validate(): FAILED - patientID must be exactly 8 characters");
             return false;
         }
+
+        // SSN validation
+        System.out.println("DEBUG Patient.validate(): ssn = '" + ssn + "' (length: " +
+                         (ssn == null ? "null" : ssn.length()) + ")");
         if (ssn == null || ssn.length() != 9) {
+            System.out.println("DEBUG Patient.validate(): FAILED - ssn must be exactly 9 characters");
             return false;
         }
+
+        // Name validation
+        System.out.println("DEBUG Patient.validate(): fName = '" + fName + "', lName = '" + lName + "'");
         if (fName == null || lName == null) {
+            System.out.println("DEBUG Patient.validate(): FAILED - fName and lName are required");
             return false;
         }
+
+        // Current phone validation
+        System.out.println("DEBUG Patient.validate(): curPhoneNo = '" + curPhoneNo + "' (length: " +
+                         (curPhoneNo == null ? "null" : curPhoneNo.length()) + ")");
         if (curPhoneNo == null || curPhoneNo.length() != 10) {
+            System.out.println("DEBUG Patient.validate(): FAILED - curPhoneNo must be exactly 10 characters");
             return false;
         }
+
+        // Permanent phone validation
+        System.out.println("DEBUG Patient.validate(): perPhoneNo = '" + perPhoneNo + "' (length: " +
+                         (perPhoneNo == null ? "null" : perPhoneNo.length()) + ")");
         if (perPhoneNo == null || perPhoneNo.length() != 10) {
+            System.out.println("DEBUG Patient.validate(): FAILED - perPhoneNo must be exactly 10 characters");
             return false;
         }
+
+        // Sex validation
+        System.out.println("DEBUG Patient.validate(): sex = '" + sex + "'");
         if (sex == null || (sex != 'F' && sex != 'M' && sex != 'O')) {
+            System.out.println("DEBUG Patient.validate(): FAILED - sex must be F, M, or O");
             return false;
         }
+
+        // Condition validation
+        System.out.println("DEBUG Patient.validate(): condition = '" + condition + "'");
         if (condition == null || (condition != 'F' && condition != 'C' && condition != 'S')) {
+            System.out.println("DEBUG Patient.validate(): FAILED - condition must be F, C, or S");
             return false;
         }
+
+        System.out.println("DEBUG Patient.validate(): PASSED - All validations successful");
         return true;
     }
 

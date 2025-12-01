@@ -13,45 +13,17 @@ package unf.g1.project;
 
 /**
  *
- * @author jakez
+ * @author Mohamed Bashiti
  */
 
 
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridBagLayoutInfo;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.awt.LayoutManager2;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
-
-import javax.swing.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import unf.g1.project.QueryBuilder;
-
-import java.util.Scanner;
-
-import javax.naming.spi.DirStateFactory;
-import javax.swing.text.JTextComponent;
-
-import unf.g1.project.models.Patient;
 
 public class main {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         System.out.println("Hello COP3703!");
 
         Connection connection = connectToDB();
@@ -64,11 +36,7 @@ public class main {
         }
 
         Gui gui = new Gui(connection);
-        /*TODO:
-        Connect add gui to models
-        Create search gui
-        */
-
+        
     }
 
 
@@ -79,8 +47,6 @@ public class main {
                 "n01412726", //G01
                 "0674" //r9Qi0oVD
             );
-
-            System.out.println("it worked?");
             return conn;
         } 
         catch (Exception e) {

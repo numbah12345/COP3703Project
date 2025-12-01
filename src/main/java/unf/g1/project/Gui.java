@@ -1,43 +1,45 @@
 package unf.g1.project;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JDesktopPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JMenuBar;
-import javax.swing.JFrame;
-import javax.swing.KeyStroke;
-
-import java.awt.event.*;
+import javax.swing.*;
 import java.awt.*;
-
-import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
-
-import oracle.sql.ConcreteProxyUtil;
-
+import java.awt.event.*;
 import java.sql.Connection;
-
-import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import unf.g1.project.models.Patient;
-import unf.g1.project.models.Doctor;
 
 public class Gui {
     JFrame mainWindow;
     JFrame addWindow;  // Track the add window
     JFrame searchWindow;
+    JFrame reportsWindow;
     JTextArea mainTextArea;
 
     // Database connection
     private Connection connection;
+
+    // Date formatters for consistent date display
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+    private static final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat sqlTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * Convert MM/DD/YYYY date string to SQL date format (YYYY-MM-DD)
+     */
+    private String convertToSqlDate(String dateStr) throws java.text.ParseException {
+        java.util.Date date = dateFormat.parse(dateStr);
+        return sqlDateFormat.format(date);
+    }
+
+    /**
+     * Convert MM/DD/YYYY HH:MM AM/PM to SQL timestamp format (YYYY-MM-DD HH:MM:SS)
+     */
+    private String convertToSqlTimestamp(String timestampStr) throws java.text.ParseException {
+        java.util.Date date = dateTimeFormat.parse(timestampStr);
+        return sqlTimestampFormat.format(date);
+    }
 
     // Track which form is currently active
     private String currentFormType;
@@ -61,13 +63,20 @@ public class Gui {
     private JTextField officePhoneField, headIdField;
 
     // Procedure form fields
-    private JTextField procNoField, procNameField, procDescField, procDurationField;
+    private JTextField procNoField, procNameField, procDescField, procDurationField, procDepCodeField;
 
     // Medication form fields
     private JTextField medNameField, medManufacturerField, medDescField;
 
     // Interaction form fields
     private JTextField intPatientIdField, intIdField, intDateField, intDescField;
+
+    // Procedure Performed form fields
+    private JTextField perfProcNoField, perfPatientIdField, perfDocIdField, perfDateTimeField;
+    private JTextField perfNotesField;
+
+    // Prescribed (Prescription) form fields
+    private JTextField presPatientIdField, presDocIdField, presMedNameField, presDateField;
 
     // Search form tracking
     private String currentSearchFormType;
@@ -120,6 +129,12 @@ public class Gui {
         viewButton.addActionListener(e -> openSearchWindow());
         sidebarConstraints.gridy = 0;
         sideBar.add(viewButton, sidebarConstraints);
+
+        //Reports button
+        JButton reportsButton = new JButton("View Reports");
+        reportsButton.addActionListener(e -> openReportsWindow());
+        sidebarConstraints.gridy = 2;
+        sideBar.add(reportsButton, sidebarConstraints);
 
         // Main Content (Right side)
         Container mainContent = new Container();
@@ -239,7 +254,7 @@ public class Gui {
 
         // Create new window if it doesn't exist
         addWindow = new JFrame("Add Data");
-        addWindow.setSize(600, 800);
+        addWindow.setSize(700, 800);
         
         addWindow.setLocationRelativeTo(mainWindow);  // Center on main window
         addWindow.setLayout(new GridBagLayout());
@@ -313,6 +328,14 @@ public class Gui {
         JButton addInteractionButton = new JButton("Interaction");
         addInteractionButton.addActionListener(e -> addInteractionForm(formsContainer));
         modelContainer.add(addInteractionButton);
+
+        JButton addProcPerformedButton = new JButton("Procedure Performed");
+        addProcPerformedButton.addActionListener(e -> addProcedurePerformedForm(formsContainer));
+        modelContainer.add(addProcPerformedButton);
+
+        JButton addPrescriptionButton = new JButton("Prescribe Medication");
+        addPrescriptionButton.addActionListener(e -> addPrescriptionForm(formsContainer));
+        modelContainer.add(addPrescriptionButton);
 
         // Load Patient form by default
         addPatientForm(formsContainer);
@@ -394,7 +417,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Birth Date (YYYY-MM-DD):"), constraints);
+        forms.add(new JLabel("Birth Date (MM/DD/YYYY):"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -722,7 +745,7 @@ public class Gui {
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Birth Date (YYYY-MM-DD):"), constraints);
+        forms.add(new JLabel("Birth Date (MM/DD/YYYY):"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
@@ -868,6 +891,18 @@ public class Gui {
         constraints.weightx = 0.7;
         procDurationField = new JTextField(5);
         forms.add(procDurationField, constraints);
+        row++;
+
+        // Department Code
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Department Code*:"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        procDepCodeField = new JTextField(4);
+        forms.add(procDepCodeField, constraints);
 
         // Set current form type
         currentFormType = "procedure";
@@ -962,15 +997,15 @@ public class Gui {
         forms.add(intIdField, constraints);
         row++;
 
-        // Interaction Date
+        // Interaction Date/Time
         constraints.gridx = 0;
         constraints.gridy = row;
         constraints.weightx = 0.3;
-        forms.add(new JLabel("Date (YYYY-MM-DD):"), constraints);
+        forms.add(new JLabel("Date/Time (MM/DD/YYYY HH:MM AM/PM):"), constraints);
 
         constraints.gridx = 1;
         constraints.weightx = 0.7;
-        intDateField = new JTextField(10);
+        intDateField = new JTextField(25);
         forms.add(intDateField, constraints);
         row++;
 
@@ -987,6 +1022,146 @@ public class Gui {
 
         // Set current form type
         currentFormType = "interaction";
+
+        forms.revalidate();
+        forms.repaint();
+    }
+
+    private void addProcedurePerformedForm(Container forms) {
+        forms.removeAll();
+        forms.setLayout(new GridBagLayout());
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(5, 10, 5, 10);
+
+        int row = 0;
+
+        // Procedure Number
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Procedure Number* (7 chars):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        perfProcNoField = new JTextField(7);
+        forms.add(perfProcNoField, constraints);
+        row++;
+
+        // Patient ID
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Patient ID* (8 chars):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        perfPatientIdField = new JTextField(8);
+        forms.add(perfPatientIdField, constraints);
+        row++;
+
+        // Doctor ID
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Doctor ID* (8 chars):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        perfDocIdField = new JTextField(8);
+        forms.add(perfDocIdField, constraints);
+        row++;
+
+        // Date/Time
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Date/Time (MM/DD/YYYY HH:MM AM/PM):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        perfDateTimeField = new JTextField(19);
+        forms.add(perfDateTimeField, constraints);
+        row++;
+
+        // Notes
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Notes:"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        perfNotesField = new JTextField(500);
+        forms.add(perfNotesField, constraints);
+
+        // Set current form type
+        currentFormType = "procedurePerformed";
+
+        forms.revalidate();
+        forms.repaint();
+    }
+
+    private void addPrescriptionForm(Container forms) {
+        forms.removeAll();
+        forms.setLayout(new GridBagLayout());
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(5, 10, 5, 10);
+
+        int row = 0;
+
+        // Patient ID
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Patient ID* (8 chars):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        presPatientIdField = new JTextField(8);
+        forms.add(presPatientIdField, constraints);
+        row++;
+
+        // Doctor ID
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Doctor ID* (8 chars):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        presDocIdField = new JTextField(8);
+        forms.add(presDocIdField, constraints);
+        row++;
+
+        // Medication Name
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Medication Name* (20 chars):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        presMedNameField = new JTextField(20);
+        forms.add(presMedNameField, constraints);
+        row++;
+
+        // Prescription Date
+        constraints.gridx = 0;
+        constraints.gridy = row;
+        constraints.weightx = 0.3;
+        forms.add(new JLabel("Prescription Date* (MM/DD/YYYY):"), constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.7;
+        presDateField = new JTextField(10);
+        forms.add(presDateField, constraints);
+
+        // Set current form type
+        currentFormType = "prescription";
 
         forms.revalidate();
         forms.repaint();
@@ -1022,6 +1197,12 @@ public class Gui {
                 break;
             case "interaction":
                 submitInteraction();
+                break;
+            case "procedurePerformed":
+                submitProcedurePerformed();
+                break;
+            case "prescription":
+                submitPrescription();
                 break;
             default:
                 JOptionPane.showMessageDialog(addWindow,
@@ -1082,7 +1263,7 @@ public class Gui {
 
             String bDateText = bDateField.getText().trim();
             if (!bDateText.isEmpty()) {
-                patient.setbDate(java.sql.Date.valueOf(bDateText));
+                patient.setbDate(java.sql.Date.valueOf(convertToSqlDate(bDateText)));
             }
 
             patient.setPriDoc(priDocField.getText().trim());
@@ -1122,7 +1303,7 @@ public class Gui {
                 JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid date format. Use YYYY-MM-DD",
+                "Invalid date format. Use MM/DD/YYYY",
                 "Input Error",
                 JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
@@ -1159,7 +1340,7 @@ public class Gui {
 
             String bDateText = docBDateField.getText().trim();
             if (!bDateText.isEmpty()) {
-                doctor.setbDate(java.sql.Date.valueOf(bDateText));
+                doctor.setbDate(java.sql.Date.valueOf(convertToSqlDate(bDateText)));
             }
 
             if (!doctor.validate()) {
@@ -1185,7 +1366,7 @@ public class Gui {
 
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid date format. Use YYYY-MM-DD",
+                "Invalid date format. Use MM/DD/YYYY",
                 "Input Error",
                 JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
@@ -1244,6 +1425,16 @@ public class Gui {
      */
     private void submitProcedure() {
         try {
+            // Extract and validate department code first
+            String depCode = procDepCodeField.getText().trim().toUpperCase();
+            if (depCode.isEmpty()) {
+                JOptionPane.showMessageDialog(addWindow,
+                    "Department Code is required",
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             unf.g1.project.models.Procedure proc = new unf.g1.project.models.Procedure();
 
             proc.setProcedureNo(procNoField.getText().trim());
@@ -1259,7 +1450,8 @@ public class Gui {
                 JOptionPane.showMessageDialog(addWindow,
                     "Validation failed! Please check required fields:\n" +
                     "- Procedure Number (ABC1234 format)\n" +
-                    "- Procedure Name",
+                    "- Procedure Name\n" +
+                    "- Department Code",
                     "Validation Error",
                     JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1268,11 +1460,38 @@ public class Gui {
             int rowsInserted = DatabaseManager.insert(connection, proc);
 
             if (rowsInserted > 0) {
-                JOptionPane.showMessageDialog(addWindow,
-                    "Procedure added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-                clearProcedureForm();
+                // Procedure inserted successfully, now insert into OFFERS
+                try {
+                    String offersSql = "INSERT INTO OFFERS (procNo, depCode) VALUES (?, ?)";
+                    PreparedStatement offersPstmt = connection.prepareStatement(offersSql);
+                    offersPstmt.setString(1, proc.getProcedureNo());
+                    offersPstmt.setString(2, depCode);
+
+                    int offersRows = offersPstmt.executeUpdate();
+                    offersPstmt.close();
+
+                    if (offersRows > 0) {
+                        JOptionPane.showMessageDialog(addWindow,
+                            "Procedure added successfully and linked to department!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        clearProcedureForm();
+                    } else {
+                        JOptionPane.showMessageDialog(addWindow,
+                            "Procedure added but failed to link to department.\n" +
+                            "You may need to manually link this procedure to a department.",
+                            "Partial Success",
+                            JOptionPane.WARNING_MESSAGE);
+                    }
+
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(addWindow,
+                        "Procedure added but error linking to department: " + e.getMessage() +
+                        "\nYou may need to manually link this procedure to a department.",
+                        "Partial Success",
+                        JOptionPane.WARNING_MESSAGE);
+                    e.printStackTrace();
+                }
             }
 
         } catch (NumberFormatException e) {
@@ -1342,9 +1561,10 @@ public class Gui {
                 interaction.setInteractionId(Integer.parseInt(idText));
             }
 
-            String dateText = intDateField.getText().trim();
-            if (!dateText.isEmpty()) {
-                interaction.setInteractionTime(java.sql.Timestamp.valueOf(dateText + " 00:00:00"));
+            String dateTimeText = intDateField.getText().trim();
+            if (!dateTimeText.isEmpty()) {
+                // Convert MM/DD/YYYY HH:MM AM/PM to SQL timestamp format
+                interaction.setInteractionTime(java.sql.Timestamp.valueOf(convertToSqlTimestamp(dateTimeText)));
             }
 
             interaction.setDescription(intDescField.getText().trim());
@@ -1374,14 +1594,118 @@ public class Gui {
                 "Invalid number format for Interaction ID",
                 "Input Error",
                 JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | java.text.ParseException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid timestamp format. Use YYYY-MM-DD HH:MM:SS",
+                "Invalid timestamp format. Use MM/DD/YYYY HH:MM AM/PM",
                 "Input Error",
                 JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
                 "Error inserting interaction: " + e.getMessage(),
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Submit procedure performed form with validation
+     */
+    private void submitProcedurePerformed() {
+        try {
+            unf.g1.project.models.ProcedurePerformed procPerf = new unf.g1.project.models.ProcedurePerformed();
+
+            procPerf.setProcedureNo(perfProcNoField.getText().trim());
+            procPerf.setPatientId(perfPatientIdField.getText().trim());
+            procPerf.setDocId(perfDocIdField.getText().trim());
+
+            String dateTimeText = perfDateTimeField.getText().trim();
+            if (!dateTimeText.isEmpty()) {
+                procPerf.setPerformedAt(java.sql.Timestamp.valueOf(convertToSqlTimestamp(dateTimeText)));
+            }
+
+            procPerf.setNotes(perfNotesField.getText().trim());
+
+            if (!procPerf.validate()) {
+                JOptionPane.showMessageDialog(addWindow,
+                    "Validation failed! Please check required fields:\n" +
+                    "- Procedure Number (7 chars)\n" +
+                    "- Patient ID (8 chars)\n" +
+                    "- Doctor ID",
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int rowsInserted = DatabaseManager.insert(connection, procPerf);
+
+            if (rowsInserted > 0) {
+                JOptionPane.showMessageDialog(addWindow,
+                    "Procedure performed record added successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+                clearProcedurePerformedForm();
+            }
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(addWindow,
+                "Invalid timestamp format. Use MM/DD/YYYY HH:MM AM/PM",
+                "Input Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(addWindow,
+                "Error inserting procedure performed: " + e.getMessage(),
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Submit prescription form with validation
+     */
+    private void submitPrescription() {
+        try {
+            unf.g1.project.models.Prescribed prescription = new unf.g1.project.models.Prescribed();
+
+            prescription.setpId(presPatientIdField.getText().trim());
+            prescription.setdId(presDocIdField.getText().trim());
+            prescription.setMedName(presMedNameField.getText().trim());
+
+            String dateText = presDateField.getText().trim();
+            if (!dateText.isEmpty()) {
+                prescription.setDatePres(java.sql.Date.valueOf(convertToSqlDate(dateText)));
+            }
+
+            if (!prescription.validate()) {
+                JOptionPane.showMessageDialog(addWindow,
+                    "Validation failed! Please check required fields:\n" +
+                    "- Patient ID (8 chars)\n" +
+                    "- Doctor ID\n" +
+                    "- Medication Name",
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int rowsInserted = DatabaseManager.insert(connection, prescription);
+
+            if (rowsInserted > 0) {
+                JOptionPane.showMessageDialog(addWindow,
+                    "Prescription added successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+                clearPrescriptionForm();
+            }
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(addWindow,
+                "Invalid date format. Use MM/DD/YYYY",
+                "Input Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(addWindow,
+                "Error inserting prescription: " + e.getMessage(),
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -1451,6 +1775,7 @@ public class Gui {
         procNameField.setText("");
         procDescField.setText("");
         procDurationField.setText("");
+        procDepCodeField.setText("");
     }
 
     /**
@@ -1470,6 +1795,27 @@ public class Gui {
         intIdField.setText("");
         intDateField.setText("");
         intDescField.setText("");
+    }
+
+    /**
+     * Clear procedure performed form fields
+     */
+    private void clearProcedurePerformedForm() {
+        perfProcNoField.setText("");
+        perfPatientIdField.setText("");
+        perfDocIdField.setText("");
+        perfDateTimeField.setText("");
+        perfNotesField.setText("");
+    }
+
+    /**
+     * Clear prescription form fields
+     */
+    private void clearPrescriptionForm() {
+        presPatientIdField.setText("");
+        presDocIdField.setText("");
+        presMedNameField.setText("");
+        presDateField.setText("");
     }
 
     /**
@@ -1649,7 +1995,7 @@ public class Gui {
             while (rs.next()) {
                 count++;
                 System.out.println("DEBUG: Found patient: " + rs.getString("patientID"));
-                results.append("Patient ID: ").append(rs.getString("patientID")).append("\n");
+                results.append("Patient ID: ").append("P").append(rs.getString("patientID")).append("\n");
                 results.append("Name: ").append(rs.getString("fName")).append(" ");
                 if (rs.getString("mInitial") != null) {
                     results.append(rs.getString("mInitial")).append(". ");
@@ -1709,7 +2055,7 @@ public class Gui {
 
             while (rs.next()) {
                 count++;
-                results.append("Doctor ID: ").append(rs.getString("doctor_id")).append("\n");
+                results.append("Doctor ID: ").append("D").append(rs.getString("doctor_id")).append("\n");
                 results.append("Name: ").append(rs.getString("first_name")).append(" ");
                 if (rs.getString("mInitial") != null) {
                     results.append(rs.getString("mInitial")).append(". ");
@@ -1791,5 +2137,274 @@ public class Gui {
                 JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+    }
+
+    private void openReportsWindow() {
+        // Check if window already exists and is visible
+        if (reportsWindow != null && reportsWindow.isVisible()) {
+            reportsWindow.toFront();
+            return;
+        }
+
+        // Create new window
+        reportsWindow = new JFrame("Reports");
+        reportsWindow.setSize(900, 700);
+        reportsWindow.setLocationRelativeTo(mainWindow);
+        reportsWindow.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(15, 15, 15, 15);
+
+        // Report Selection Container (Top)
+        Container reportTypeContainer = new Container();
+        reportTypeContainer.setLayout(new FlowLayout());
+
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.NORTH;
+        reportsWindow.add(reportTypeContainer, constraints);
+
+        // Input Container (Middle)
+        Container inputContainer = new Container();
+        inputContainer.setLayout(new GridBagLayout());
+
+        constraints.gridy = 1;
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        reportsWindow.add(inputContainer, constraints);
+
+        // Report Display Area (Bottom - Takes most space)
+        JTextArea reportTextArea = new JTextArea();
+        reportTextArea.setEditable(false);
+        reportTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        reportTextArea.setText("Select a report type above and enter required information.");
+
+        constraints.gridy = 2;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        reportsWindow.add(reportTextArea, constraints);
+
+        // Report type buttons
+        JButton patientRecordButton = new JButton("Patient Health Record");
+        patientRecordButton.addActionListener(e -> showPatientHealthRecordForm(inputContainer, reportTextArea));
+        reportTypeContainer.add(patientRecordButton);
+
+        JButton procByDeptButton = new JButton("Procedures by Department");
+        procByDeptButton.addActionListener(e -> showProceduresByDepartmentForm(inputContainer, reportTextArea));
+        reportTypeContainer.add(procByDeptButton);
+
+        JButton procByDocButton = new JButton("Procedures by Doctor");
+        procByDocButton.addActionListener(e -> showProceduresByDoctorForm(inputContainer, reportTextArea));
+        reportTypeContainer.add(procByDocButton);
+
+        // Load patient health record form by default
+        showPatientHealthRecordForm(inputContainer, reportTextArea);
+
+        reportsWindow.setVisible(true);
+    }
+
+    private void showPatientHealthRecordForm(Container inputContainer, JTextArea reportArea) {
+        inputContainer.removeAll();
+        inputContainer.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputContainer.add(new JLabel("Patient ID (8 chars):"), gbc);
+
+        gbc.gridx = 1;
+        JTextField patientIdField = new JTextField(15);
+        inputContainer.add(patientIdField, gbc);
+
+        gbc.gridx = 2;
+        JButton generateButton = new JButton("Generate Report");
+        generateButton.addActionListener(e -> {
+            String patientId = patientIdField.getText().trim();
+            if (patientId.isEmpty()) {
+                JOptionPane.showMessageDialog(reportsWindow,
+                    "Please enter a Patient ID",
+                    "Input Required",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                String report = DatabaseManager.generatePatientHealthRecord(connection, patientId);
+                reportArea.setText(report);
+                reportArea.setCaretPosition(0);  // Scroll to top
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(reportsWindow,
+                    "Error generating report: " + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        inputContainer.add(generateButton, gbc);
+
+        inputContainer.revalidate();
+        inputContainer.repaint();
+        reportArea.setText("Enter a Patient ID and click 'Generate Report' to view complete health record.");
+    }
+
+    private void showProceduresByDepartmentForm(Container inputContainer, JTextArea reportArea) {
+        inputContainer.removeAll();
+        inputContainer.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputContainer.add(new JLabel("Department Code or Name:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField deptSearchField = new JTextField(15);
+        inputContainer.add(deptSearchField, gbc);
+
+        gbc.gridx = 2;
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> {
+            String searchTerm = deptSearchField.getText().trim();
+            if (searchTerm.isEmpty()) {
+                JOptionPane.showMessageDialog(reportsWindow,
+                    "Please enter a department code or name",
+                    "Input Required",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                java.sql.ResultSet rs = DatabaseManager.searchProceduresByDepartment(connection, searchTerm);
+                StringBuilder report = new StringBuilder();
+                report.append("============ PROCEDURES BY DEPARTMENT ============\n");
+                report.append("Search term: ").append(searchTerm).append("\n\n");
+
+                int count = 0;
+                while (rs.next()) {
+                    count++;
+                    report.append("• Procedure: ").append(rs.getString("procedure_name"))
+                          .append(" (").append(rs.getString("procedure_no")).append(")\n");
+
+                    String desc = rs.getString("description");
+                    if (desc != null && !desc.isEmpty()) {
+                        report.append("  Description: ").append(desc).append("\n");
+                    }
+
+                    int duration = rs.getInt("duration_minutes");
+                    if (duration > 0) {
+                        report.append("  Duration: ").append(duration).append(" minutes\n");
+                    }
+                    report.append("\n");
+                }
+
+                if (count == 0) {
+                    report.append("No procedures found for this department.\n");
+                } else {
+                    report.insert(report.indexOf("\n\n") + 2, "Found " + count + " procedure(s)\n\n");
+                }
+
+                reportArea.setText(report.toString());
+                reportArea.setCaretPosition(0);
+                rs.close();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(reportsWindow,
+                    "Error searching procedures: " + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        inputContainer.add(searchButton, gbc);
+
+        inputContainer.revalidate();
+        inputContainer.repaint();
+        reportArea.setText("Enter a department code or name and click 'Search' to view procedures offered by that department.");
+    }
+
+    private void showProceduresByDoctorForm(Container inputContainer, JTextArea reportArea) {
+        inputContainer.removeAll();
+        inputContainer.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputContainer.add(new JLabel("Doctor ID:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField doctorIdField = new JTextField(15);
+        inputContainer.add(doctorIdField, gbc);
+
+        gbc.gridx = 2;
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> {
+            String doctorId = doctorIdField.getText().trim();
+            if (doctorId.isEmpty()) {
+                JOptionPane.showMessageDialog(reportsWindow,
+                    "Please enter a Doctor ID",
+                    "Input Required",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                java.sql.ResultSet rs = DatabaseManager.searchProceduresByDoctor(connection, doctorId);
+                StringBuilder report = new StringBuilder();
+                report.append("============ PROCEDURES BY DOCTOR ============\n");
+                report.append("Doctor ID: D").append(doctorId).append("\n\n");
+
+                int count = 0;
+                while (rs.next()) {
+                    count++;
+                    report.append("• Procedure: ").append(rs.getString("procedure_name"))
+                          .append(" (").append(rs.getString("procedure_no")).append(")\n");
+
+                    java.sql.Timestamp performedAt = rs.getTimestamp("performed_at");
+                    if (performedAt != null) {
+                        report.append("  Performed: ").append(dateTimeFormat.format(performedAt)).append("\n");
+                    }
+
+                    String patientName = rs.getString("patient_name");
+                    if (patientName != null) {
+                        report.append("  Patient: ").append(patientName).append("\n");
+                    }
+
+                    String notes = rs.getString("notes");
+                    if (notes != null && !notes.isEmpty()) {
+                        report.append("  Notes: ").append(notes).append("\n");
+                    }
+                    report.append("\n");
+                }
+
+                if (count == 0) {
+                    report.append("No procedures found for this doctor.\n");
+                } else {
+                    report.insert(report.indexOf("\n\n") + 2, "Found " + count + " procedure(s)\n\n");
+                }
+
+                reportArea.setText(report.toString());
+                reportArea.setCaretPosition(0);
+                rs.close();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(reportsWindow,
+                    "Error searching procedures: " + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        inputContainer.add(searchButton, gbc);
+
+        inputContainer.revalidate();
+        inputContainer.repaint();
+        reportArea.setText("Enter a Doctor ID and click 'Search' to view all procedures performed by that doctor.");
     }
 }
