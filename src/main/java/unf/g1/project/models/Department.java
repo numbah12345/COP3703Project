@@ -15,10 +15,11 @@ public class Department extends Model {
     private String headId;              // Head doctor ID (VARCHAR2(8))
 
     // Constructors
-    public Department() {}
+    public Department() {
+    }
 
     public Department(String deptName, String deptCode, String officeNumber,
-                     String officePhone, String headId) {
+            String officePhone, String headId) {
         this.deptName = deptName;
         this.deptCode = deptCode;
         this.officeNumber = officeNumber;
@@ -66,29 +67,54 @@ public class Department extends Model {
     }
 
     // Getters and Setters
-    public String getDeptName() { return deptName; }
-    public void setDeptName(String deptName) { this.deptName = deptName; }
+    public String getDeptName() {
+        return deptName;
+    }
 
-    public String getDeptCode() { return deptCode; }
-    public void setDeptCode(String deptCode) { this.deptCode = deptCode; }
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
 
-    public String getOfficeNumber() { return officeNumber; }
-    public void setOfficeNumber(String officeNumber) { this.officeNumber = officeNumber; }
+    public String getDeptCode() {
+        return deptCode;
+    }
 
-    public String getOfficePhone() { return officePhone; }
-    public void setOfficePhone(String officePhone) { this.officePhone = officePhone; }
+    public void setDeptCode(String deptCode) {
+        this.deptCode = deptCode;
+    }
 
-    public String getHeadId() { return headId; }
-    public void setHeadId(String headId) { this.headId = headId; }
+    public String getOfficeNumber() {
+        return officeNumber;
+    }
+
+    public void setOfficeNumber(String officeNumber) {
+        this.officeNumber = officeNumber;
+    }
+
+    public String getOfficePhone() {
+        return officePhone;
+    }
+
+    public void setOfficePhone(String officePhone) {
+        this.officePhone = officePhone;
+    }
+
+    public String getHeadId() {
+        return headId;
+    }
+
+    public void setHeadId(String headId) {
+        this.headId = headId;
+    }
 
     @Override
     public String toString() {
-        return "Department{" +
-                "deptCode='" + deptCode + '\'' +
-                ", deptName='" + deptName + '\'' +
-                ", officeNumber='" + officeNumber + '\'' +
-                ", officePhone='" + officePhone + '\'' +
-                ", headId='" + headId + '\'' +
-                '}';
+        return "Department{"
+                + "deptCode='" + deptCode + '\''
+                + ", deptName='" + deptName + '\''
+                + ", officeNumber='" + officeNumber + '\''
+                + ", officePhone='" + officePhone + '\''
+                + ", headId='" + headId + '\''
+                + '}';
     }
 }

@@ -19,8 +19,9 @@ import unf.g1.project.models.Procedure;
 import unf.g1.project.models.ProcedurePerformed;
 
 public class Gui {
+
     JFrame mainWindow;
-    JFrame addWindow;  
+    JFrame addWindow;
     JFrame searchWindow;
     JFrame reportsWindow;
     JTextArea mainTextArea;
@@ -43,7 +44,8 @@ public class Gui {
     }
 
     /**
-     * Convert MM/DD/YYYY HH:MM AM/PM to SQL timestamp format (YYYY-MM-DD HH:MM:SS)
+     * Convert MM/DD/YYYY HH:MM AM/PM to SQL timestamp format (YYYY-MM-DD
+     * HH:MM:SS)
      */
     private String convertToSqlTimestamp(String timestampStr) throws java.text.ParseException {
         java.util.Date date = dateTimeFormat.parse(timestampStr);
@@ -102,7 +104,7 @@ public class Gui {
     public Gui(Connection connection) {
         this.connection = connection;
         mainWindow = new JFrame("Database Manager");
-        mainWindow.setSize(1280,720);
+        mainWindow.setSize(1280, 720);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Close all windows when main closes
         mainWindow.setLayout(new GridBagLayout());
         mainWindow.setBackground(Color.DARK_GRAY);
@@ -113,6 +115,8 @@ public class Gui {
             public void windowClosing(WindowEvent e) {
                 if (addWindow != null) {
                     addWindow.dispose();
+                    searchWindow.dispose();
+                    reportsWindow.dispose();
                 }
             }
         });
@@ -172,7 +176,6 @@ public class Gui {
         mainWindow.add(mainContent, constraints);
 
         mainWindow.setVisible(true);
-
 
     }
 
@@ -264,11 +267,11 @@ public class Gui {
         // Create new window if it doesn't exist
         addWindow = new JFrame("Add Data");
         addWindow.setSize(700, 800);
-        
+
         addWindow.setLocationRelativeTo(mainWindow);  // Center on main window
         addWindow.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(15,15,15,15);
+        constraints.insets = new Insets(15, 15, 15, 15);
 
         // Model Container (Top - Fixed height)
         Container modelContainer = new Container();
@@ -1177,30 +1180,40 @@ public class Gui {
     }
 
     /**
-     * Routes form submission to the appropriate handler based on currentFormType
+     * Routes form submission to the appropriate handler based on
+     * currentFormType
      */
     private void handleFormSubmit() {
         if (currentFormType == null) {
             JOptionPane.showMessageDialog(addWindow,
-                "Please select a form type first.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Please select a form type first.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         switch (currentFormType) {
-            case "patient" -> submitPatient();
-            case "doctor" -> submitDoctor();
-            case "department" -> submitDepartment();
-            case "procedure" -> submitProcedure();
-            case "medication" -> submitMedication();
-            case "interaction" -> submitInteraction();
-            case "procedurePerformed" -> submitProcedurePerformed();
-            case "prescription" -> submitPrescription();
-            default -> JOptionPane.showMessageDialog(addWindow,
-                    "Unknown form type: " + currentFormType,
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            case "patient" ->
+                submitPatient();
+            case "doctor" ->
+                submitDoctor();
+            case "department" ->
+                submitDepartment();
+            case "procedure" ->
+                submitProcedure();
+            case "medication" ->
+                submitMedication();
+            case "interaction" ->
+                submitInteraction();
+            case "procedurePerformed" ->
+                submitProcedurePerformed();
+            case "prescription" ->
+                submitPrescription();
+            default ->
+                JOptionPane.showMessageDialog(addWindow,
+                        "Unknown form type: " + currentFormType,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1272,8 +1285,8 @@ public class Gui {
                                                          - Permanent Phone (10 digits)
                                                          - Sex (F/M/O)
                                                          - Condition (F/C/S)""",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1282,27 +1295,27 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Patient added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Patient added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearPatientForm();
             }
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid number format in zip code field",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid number format in zip code field",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid date format. Use MM/DD/YYYY",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid date format. Use MM/DD/YYYY",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting patient: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting patient: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1336,12 +1349,12 @@ public class Gui {
 
             if (!doctor.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Doctor ID (8 chars)\n" +
-                    "- SSN (9 digits)\n" +
-                    "- First/Last Name",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Doctor ID (8 chars)\n"
+                        + "- SSN (9 digits)\n"
+                        + "- First/Last Name",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1349,22 +1362,22 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Doctor added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Doctor added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearDoctorForm();
             }
 
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid date format. Use MM/DD/YYYY",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid date format. Use MM/DD/YYYY",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting doctor: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting doctor: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1383,11 +1396,11 @@ public class Gui {
 
             if (!dept.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Department Code\n" +
-                    "- Department Name",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Department Code\n"
+                        + "- Department Name",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1395,17 +1408,17 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Department added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Department added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearDepartmentForm();
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting department: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting department: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1418,9 +1431,9 @@ public class Gui {
             String depCode = procDepCodeField.getText().trim().toUpperCase();
             if (depCode.isEmpty()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Department Code is required",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Department Code is required",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1437,12 +1450,12 @@ public class Gui {
 
             if (!proc.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Procedure Number (ABC1234 format)\n" +
-                    "- Procedure Name\n" +
-                    "- Department Code",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Procedure Number (ABC1234 format)\n"
+                        + "- Procedure Name\n"
+                        + "- Department Code",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1461,37 +1474,37 @@ public class Gui {
 
                     if (offersRows > 0) {
                         JOptionPane.showMessageDialog(addWindow,
-                            "Procedure added successfully and linked to department!",
-                            "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
+                                "Procedure added successfully and linked to department!",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
                         clearProcedureForm();
                     } else {
                         JOptionPane.showMessageDialog(addWindow,
-                            "Procedure added but failed to link to department.\n" +
-                            "You may need to manually link this procedure to a department.",
-                            "Partial Success",
-                            JOptionPane.WARNING_MESSAGE);
+                                "Procedure added but failed to link to department.\n"
+                                + "You may need to manually link this procedure to a department.",
+                                "Partial Success",
+                                JOptionPane.WARNING_MESSAGE);
                     }
 
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(addWindow,
-                        "Procedure added but error linking to department: " + e.getMessage() +
-                        "\nYou may need to manually link this procedure to a department.",
-                        "Partial Success",
-                        JOptionPane.WARNING_MESSAGE);
+                            "Procedure added but error linking to department: " + e.getMessage()
+                            + "\nYou may need to manually link this procedure to a department.",
+                            "Partial Success",
+                            JOptionPane.WARNING_MESSAGE);
                 }
             }
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid number format in duration field",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid number format in duration field",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting procedure: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting procedure: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1508,10 +1521,10 @@ public class Gui {
 
             if (!med.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Medication Name",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Medication Name",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1519,17 +1532,17 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Medication added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Medication added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearMedicationForm();
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting medication: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting medication: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1557,11 +1570,11 @@ public class Gui {
 
             if (!interaction.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Patient ID (8 chars)\n" +
-                    "- Interaction ID (integer)",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Patient ID (8 chars)\n"
+                        + "- Interaction ID (integer)",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1569,27 +1582,27 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Interaction added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Interaction added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearInteractionForm();
             }
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid number format for Interaction ID",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid number format for Interaction ID",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException | java.text.ParseException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid timestamp format. Use MM/DD/YYYY HH:MM AM/PM",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid timestamp format. Use MM/DD/YYYY HH:MM AM/PM",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting interaction: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting interaction: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1613,12 +1626,12 @@ public class Gui {
 
             if (!procPerf.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Procedure Number (7 chars)\n" +
-                    "- Patient ID (8 chars)\n" +
-                    "- Doctor ID",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Procedure Number (7 chars)\n"
+                        + "- Patient ID (8 chars)\n"
+                        + "- Doctor ID",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1626,22 +1639,22 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Procedure performed record added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Procedure performed record added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearProcedurePerformedForm();
             }
 
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid timestamp format. Use MM/DD/YYYY HH:MM AM/PM",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid timestamp format. Use MM/DD/YYYY HH:MM AM/PM",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting procedure performed: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting procedure performed: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1663,12 +1676,12 @@ public class Gui {
 
             if (!prescription.validate()) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Validation failed! Please check required fields:\n" +
-                    "- Patient ID (8 chars)\n" +
-                    "- Doctor ID\n" +
-                    "- Medication Name",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Validation failed! Please check required fields:\n"
+                        + "- Patient ID (8 chars)\n"
+                        + "- Doctor ID\n"
+                        + "- Medication Name",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1676,22 +1689,22 @@ public class Gui {
 
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(addWindow,
-                    "Prescription added successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Prescription added successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearPrescriptionForm();
             }
 
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Invalid date format. Use MM/DD/YYYY",
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Invalid date format. Use MM/DD/YYYY",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(addWindow,
-                "Error inserting prescription: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error inserting prescription: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1933,38 +1946,41 @@ public class Gui {
     private void handleSearchSubmit() {
         if (currentSearchFormType == null) {
             JOptionPane.showMessageDialog(searchWindow,
-                "Please select a search type first.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Please select a search type first.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         switch (currentSearchFormType) {
-            case "patient" -> performPatientSearch();
-            case "doctor" -> performDoctorSearch();
-            case "department" -> performDepartmentSearch();
-            default -> JOptionPane.showMessageDialog(searchWindow,
-                    "Unknown search type: " + currentSearchFormType,
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            case "patient" ->
+                performPatientSearch();
+            case "doctor" ->
+                performDoctorSearch();
+            case "department" ->
+                performDepartmentSearch();
+            default ->
+                JOptionPane.showMessageDialog(searchWindow,
+                        "Unknown search type: " + currentSearchFormType,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
      * Perform patient search
      */
+    @SuppressWarnings("UseSpecificCatch")
     private void performPatientSearch() {
         try {
             String patientId = searchPatientIdField.getText().trim();
             String name = searchPatientNameField.getText().trim();
 
-            
-
             if (patientId.isEmpty() && name.isEmpty()) {
                 JOptionPane.showMessageDialog(searchWindow,
-                    "Please enter at least one search criterion",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Please enter at least one search criterion",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1976,7 +1992,7 @@ public class Gui {
 
             while (rs.next()) {
                 count++;
-                
+
                 results.append("Patient ID: ").append("P").append(rs.getString("patientID")).append("\n");
                 results.append("Name: ").append(rs.getString("fName")).append(" ");
                 if (rs.getString("mInitial") != null) {
@@ -1991,8 +2007,6 @@ public class Gui {
                 results.append("----------------------------------------\n");
             }
 
-           
-
             if (count == 0) {
                 results.append("No patients found matching the criteria.");
             } else {
@@ -2000,14 +2014,14 @@ public class Gui {
             }
 
             mainTextArea.setText(results.toString());
-            
+
             rs.close();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(searchWindow,
-                "Error searching patients: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error searching patients: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -2021,9 +2035,9 @@ public class Gui {
 
             if (doctorId.isEmpty() && name.isEmpty()) {
                 JOptionPane.showMessageDialog(searchWindow,
-                    "Please enter at least one search criterion",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Please enter at least one search criterion",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -2062,9 +2076,9 @@ public class Gui {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(searchWindow,
-                "Error searching doctors: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error searching doctors: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -2078,9 +2092,9 @@ public class Gui {
 
             if (deptCode.isEmpty() && deptName.isEmpty()) {
                 JOptionPane.showMessageDialog(searchWindow,
-                    "Please enter at least one search criterion",
-                    "Validation Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Please enter at least one search criterion",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -2111,9 +2125,9 @@ public class Gui {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(searchWindow,
-                "Error searching departments: " + e.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+                    "Error searching departments: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -2204,9 +2218,9 @@ public class Gui {
             String patientId = patientIdField.getText().trim();
             if (patientId.isEmpty()) {
                 JOptionPane.showMessageDialog(reportsWindow,
-                    "Please enter a Patient ID",
-                    "Input Required",
-                    JOptionPane.WARNING_MESSAGE);
+                        "Please enter a Patient ID",
+                        "Input Required",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -2216,9 +2230,9 @@ public class Gui {
                 reportArea.setCaretPosition(0);  // Scroll to top
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(reportsWindow,
-                    "Error generating report: " + ex.getMessage(),
-                    "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Error generating report: " + ex.getMessage(),
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
         inputContainer.add(generateButton, constraints);
@@ -2249,9 +2263,9 @@ public class Gui {
             String searchTerm = deptSearchField.getText().trim();
             if (searchTerm.isEmpty()) {
                 JOptionPane.showMessageDialog(reportsWindow,
-                    "Please enter a department code or name",
-                    "Input Required",
-                    JOptionPane.WARNING_MESSAGE);
+                        "Please enter a department code or name",
+                        "Input Required",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -2265,7 +2279,7 @@ public class Gui {
                 while (rs.next()) {
                     count++;
                     report.append("• Procedure: ").append(rs.getString("procedure_name"))
-                          .append(" (").append(rs.getString("procedure_no")).append(")\n");
+                            .append(" (").append(rs.getString("procedure_no")).append(")\n");
 
                     String desc = rs.getString("description");
                     if (desc != null && !desc.isEmpty()) {
@@ -2291,9 +2305,9 @@ public class Gui {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(reportsWindow,
-                    "Error searching procedures: " + ex.getMessage(),
-                    "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Error searching procedures: " + ex.getMessage(),
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
         inputContainer.add(searchButton, constraints);
@@ -2324,9 +2338,9 @@ public class Gui {
             String doctorId = doctorIdField.getText().trim();
             if (doctorId.isEmpty()) {
                 JOptionPane.showMessageDialog(reportsWindow,
-                    "Please enter a Doctor ID",
-                    "Input Required",
-                    JOptionPane.WARNING_MESSAGE);
+                        "Please enter a Doctor ID",
+                        "Input Required",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -2340,7 +2354,7 @@ public class Gui {
                 while (rs.next()) {
                     count++;
                     report.append("• Procedure: ").append(rs.getString("procedure_name"))
-                          .append(" (").append(rs.getString("procedure_no")).append(")\n");
+                            .append(" (").append(rs.getString("procedure_no")).append(")\n");
 
                     java.sql.Timestamp performedAt = rs.getTimestamp("performed_at");
                     if (performedAt != null) {
@@ -2371,9 +2385,9 @@ public class Gui {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(reportsWindow,
-                    "Error searching procedures: " + ex.getMessage(),
-                    "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Error searching procedures: " + ex.getMessage(),
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
         inputContainer.add(searchButton, constraints);

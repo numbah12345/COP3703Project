@@ -16,10 +16,11 @@ public class ProcedurePerformed extends Model {
     private String notes;               // Notes about the procedure (CLOB)
 
     // Constructors
-    public ProcedurePerformed() {}
+    public ProcedurePerformed() {
+    }
 
     public ProcedurePerformed(String procedureNo, String patientId, String docId,
-                             Timestamp performedAt, String notes) {
+            Timestamp performedAt, String notes) {
         this.procedureNo = procedureNo;
         this.patientId = patientId;
         this.docId = docId;
@@ -71,29 +72,54 @@ public class ProcedurePerformed extends Model {
     }
 
     // Getters and Setters
-    public String getProcedureNo() { return procedureNo; }
-    public void setProcedureNo(String procedureNo) { this.procedureNo = procedureNo; }
+    public String getProcedureNo() {
+        return procedureNo;
+    }
 
-    public String getPatientId() { return patientId; }
-    public void setPatientId(String patientId) { this.patientId = patientId; }
+    public void setProcedureNo(String procedureNo) {
+        this.procedureNo = procedureNo;
+    }
 
-    public String getDocId() { return docId; }
-    public void setDocId(String docId) { this.docId = docId; }
+    public String getPatientId() {
+        return patientId;
+    }
 
-    public Timestamp getPerformedAt() { return performedAt; }
-    public void setPerformedAt(Timestamp performedAt) { this.performedAt = performedAt; }
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public String getDocId() {
+        return docId;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
+    public Timestamp getPerformedAt() {
+        return performedAt;
+    }
+
+    public void setPerformedAt(Timestamp performedAt) {
+        this.performedAt = performedAt;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
     @Override
     public String toString() {
-        return "ProcedurePerformed{" +
-                "procedureNo='" + procedureNo + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", docId='" + docId + '\'' +
-                ", performedAt=" + performedAt +
-                ", notes='" + notes + '\'' +
-                '}';
+        return "ProcedurePerformed{"
+                + "procedureNo='" + procedureNo + '\''
+                + ", patientId='" + patientId + '\''
+                + ", docId='" + docId + '\''
+                + ", performedAt=" + performedAt
+                + ", notes='" + notes + '\''
+                + '}';
     }
 }

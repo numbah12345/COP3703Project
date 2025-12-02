@@ -14,10 +14,11 @@ public class Procedure extends Model {
     private Integer durationMinutes;    // Duration in minutes
 
     // Constructors
-    public Procedure() {}
+    public Procedure() {
+    }
 
     public Procedure(String procedureName, String description, String procedureNo,
-                    Integer durationMinutes) {
+            Integer durationMinutes) {
         this.procedureName = procedureName;
         this.description = description;
         this.procedureNo = procedureNo;
@@ -63,25 +64,45 @@ public class Procedure extends Model {
     }
 
     // Getters and Setters
-    public String getProcedureName() { return procedureName; }
-    public void setProcedureName(String procedureName) { this.procedureName = procedureName; }
+    public String getProcedureName() {
+        return procedureName;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setProcedureName(String procedureName) {
+        this.procedureName = procedureName;
+    }
 
-    public String getProcedureNo() { return procedureNo; }
-    public void setProcedureNo(String procedureNo) { this.procedureNo = procedureNo; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Integer getDurationMinutes() { return durationMinutes; }
-    public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getProcedureNo() {
+        return procedureNo;
+    }
+
+    public void setProcedureNo(String procedureNo) {
+        this.procedureNo = procedureNo;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
+    }
 
     @Override
     public String toString() {
-        return "Procedure{" +
-                "procedureNo='" + procedureNo + '\'' +
-                ", procedureName='" + procedureName + '\'' +
-                ", description='" + description + '\'' +
-                ", durationMinutes=" + durationMinutes +
-                '}';
+        return "Procedure{"
+                + "procedureNo='" + procedureNo + '\''
+                + ", procedureName='" + procedureName + '\''
+                + ", description='" + description + '\''
+                + ", durationMinutes=" + durationMinutes
+                + '}';
     }
 }

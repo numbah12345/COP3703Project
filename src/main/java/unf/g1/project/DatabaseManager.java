@@ -20,7 +20,9 @@ public class DatabaseManager {
      * Format a date to MM/dd/yyyy
      */
     private static String formatDate(java.sql.Date date) {
-        if (date == null) return "N/A";
+        if (date == null) {
+            return "N/A";
+        }
         return dateFormat.format(date);
     }
 
@@ -28,12 +30,15 @@ public class DatabaseManager {
      * Format a timestamp to MM/dd/yyyy hh:mm AM/PM
      */
     private static String formatDateTime(Timestamp timestamp) {
-        if (timestamp == null) return "N/A";
+        if (timestamp == null) {
+            return "N/A";
+        }
         return dateTimeFormat.format(timestamp);
     }
 
     /**
      * Insert a model object into the database
+     *
      * @param connection Database connection
      * @param model Model object to insert
      * @return Number of rows affected
@@ -52,11 +57,12 @@ public class DatabaseManager {
             int index = 1;
             for (Map.Entry<String, Object> entry : data.entrySet()) {
                 Object value = entry.getValue();
-                System.out.println("DEBUG DatabaseManager.insert(): Param " + index + " (" + entry.getKey() + "): " +
-                        (value == null ? "NULL" : value.toString() + " [" + value.getClass().getSimpleName() + "]"));
+                System.out.println("DEBUG DatabaseManager.insert(): Param " + index + " (" + entry.getKey() + "): "
+                        + (value == null ? "NULL" : value.toString() + " [" + value.getClass().getSimpleName() + "]"));
                 setParameter(pstmt, index, value);
                 index++;
-            }   System.out.println("DEBUG DatabaseManager.insert(): Executing update...");
+            }
+            System.out.println("DEBUG DatabaseManager.insert(): Executing update...");
             rowsAffected = pstmt.executeUpdate();
             System.out.println("DEBUG DatabaseManager.insert(): Rows affected: " + rowsAffected);
         }
@@ -65,6 +71,7 @@ public class DatabaseManager {
 
     /**
      * Helper to set PreparedStatement parameters based on type
+     *
      * @param pstmt PreparedStatement to set parameter on
      * @param index Parameter index (1-based)
      * @param value Value to set
@@ -93,6 +100,7 @@ public class DatabaseManager {
 
     /**
      * Search for patients by ID or name
+     *
      * @param connection Database connection
      * @param patientId Patient ID to search (can be null/empty)
      * @param name Name to search (first or last, can be null/empty)
@@ -119,7 +127,7 @@ public class DatabaseManager {
 
         if (patientId != null && !patientId.isEmpty()) {
             pstmt.setString(index++, patientId);
-            System.out.println("DEBUG DatabaseManager: Set patientID parameter at index " + (index-1));
+            System.out.println("DEBUG DatabaseManager: Set patientID parameter at index " + (index - 1));
         }
         if (name != null && !name.isEmpty()) {
             String pattern = "%" + name + "%";
@@ -137,6 +145,7 @@ public class DatabaseManager {
 
     /**
      * Search for doctors by ID or name
+     *
      * @param connection Database connection
      * @param doctorId Doctor ID to search (can be null/empty)
      * @param name Name to search (first or last, can be null/empty)
@@ -171,6 +180,7 @@ public class DatabaseManager {
 
     /**
      * Search for departments by code or name
+     *
      * @param connection Database connection
      * @param deptCode Department code to search (can be null/empty)
      * @param deptName Department name to search (can be null/empty)
@@ -204,6 +214,7 @@ public class DatabaseManager {
 
     /**
      * Generate complete health record for a patient
+     *
      * @param connection Database connection
      * @param patientId Patient ID to generate report for
      * @return Formatted string containing complete health record
@@ -230,7 +241,7 @@ public class DatabaseManager {
                     report.append(rs.getString("lName")).append("\n");
                     report.append("Address: ").append(rs.getString("curAddress")).append("\n");
                     report.append("Phone: ").append(rs.getString("curPhoneNo")).append("\n");
-                    
+
                     String docId = rs.getString("primary_doctor_id");
                     String docName = rs.getString("primary_doctor_name");
                     if (docName != null) {
@@ -263,7 +274,7 @@ public class DatabaseManager {
                     report.append("• Procedure: ").append(rs.getString("procedure_name"))
                             .append(" (").append(rs.getString("procedure_no")).append(")\n");
                     report.append("  Date: ").append(formatDateTime(rs.getTimestamp("performed_at"))).append("\n");
-                    
+
                     String docId = rs.getString("doctor_id");
                     String docName = rs.getString("doctor_name");
                     if (docName != null) {
@@ -273,7 +284,7 @@ public class DatabaseManager {
                         }
                         report.append("\n");
                     }
-                    
+
                     String notes = rs.getString("notes");
                     if (notes != null && !notes.isEmpty()) {
                         report.append("  Notes: ").append(notes).append("\n");
@@ -297,7 +308,7 @@ public class DatabaseManager {
                     hasInteractions = true;
                     report.append("• Interaction ID: ").append(rs.getString("interaction_id")).append("\n");
                     report.append("  Time: ").append(formatDateTime(rs.getTimestamp("interactionTime"))).append("\n");
-                    
+
                     String description = rs.getString("description");
                     if (description != null && !description.isEmpty()) {
                         report.append("  Description: ").append(description).append("\n");
@@ -320,14 +331,14 @@ public class DatabaseManager {
                 while (rs.next()) {
                     hasMedications = true;
                     report.append("• Medication: ").append(rs.getString("medName")).append("\n");
-                    
+
                     String description = rs.getString("description");
                     if (description != null && !description.isEmpty()) {
                         report.append("  Description: ").append(description).append("\n");
                     }
-                    
+
                     report.append("  Prescribed: ").append(formatDate(rs.getDate("datePres"))).append("\n");
-                    
+
                     String docId = rs.getString("doctor_id");
                     String docName = rs.getString("prescribing_doctor");
                     if (docName != null) {
@@ -351,6 +362,7 @@ public class DatabaseManager {
 
     /**
      * Search for procedures offered by a department
+     *
      * @param connection Database connection
      * @param searchTerm Department code or name to search for
      * @return ResultSet containing matching procedures
@@ -367,6 +379,7 @@ public class DatabaseManager {
 
     /**
      * Search for procedures performed by a specific doctor
+     *
      * @param connection Database connection
      * @param doctorId Doctor ID to search for
      * @return ResultSet containing matching procedures

@@ -15,10 +15,11 @@ public class Interaction extends Model {
     private String description;         // Description (VARCHAR2(500))
 
     // Constructors
-    public Interaction() {}
+    public Interaction() {
+    }
 
     public Interaction(String patintId, Integer interactionId, Timestamp interactionTime,
-                      String description) {
+            String description) {
         this.patintId = patintId;
         this.interactionId = interactionId;
         this.interactionTime = interactionTime;
@@ -64,25 +65,45 @@ public class Interaction extends Model {
     }
 
     // Getters and Setters
-    public String getPatintId() { return patintId; }
-    public void setPatintId(String patintId) { this.patintId = patintId; }
+    public String getPatintId() {
+        return patintId;
+    }
 
-    public Integer getInteractionId() { return interactionId; }
-    public void setInteractionId(Integer interactionId) { this.interactionId = interactionId; }
+    public void setPatintId(String patintId) {
+        this.patintId = patintId;
+    }
 
-    public Timestamp getInteractionTime() { return interactionTime; }
-    public void setInteractionTime(Timestamp interactionTime) { this.interactionTime = interactionTime; }
+    public Integer getInteractionId() {
+        return interactionId;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setInteractionId(Integer interactionId) {
+        this.interactionId = interactionId;
+    }
+
+    public Timestamp getInteractionTime() {
+        return interactionTime;
+    }
+
+    public void setInteractionTime(Timestamp interactionTime) {
+        this.interactionTime = interactionTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @Override
     public String toString() {
-        return "Interaction{" +
-                "patintId='" + patintId + '\'' +
-                ", interactionId=" + interactionId +
-                ", interactionTime=" + interactionTime +
-                ", description='" + description + '\'' +
-                '}';
+        return "Interaction{"
+                + "patintId='" + patintId + '\''
+                + ", interactionId=" + interactionId
+                + ", interactionTime=" + interactionTime
+                + ", description='" + description + '\''
+                + '}';
     }
 }

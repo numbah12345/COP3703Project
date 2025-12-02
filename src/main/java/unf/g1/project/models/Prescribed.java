@@ -15,7 +15,8 @@ public class Prescribed extends Model {
     private Date datePres;              // Prescription date
 
     // Constructors
-    public Prescribed() {}
+    public Prescribed() {
+    }
 
     public Prescribed(String pId, String dId, String medName, Date datePres) {
         this.pId = pId;
@@ -67,25 +68,45 @@ public class Prescribed extends Model {
     }
 
     // Getters and Setters
-    public String getpId() { return pId; }
-    public void setpId(String pId) { this.pId = pId; }
+    public String getpId() {
+        return pId;
+    }
 
-    public String getdId() { return dId; }
-    public void setdId(String dId) { this.dId = dId; }
+    public void setpId(String pId) {
+        this.pId = pId;
+    }
 
-    public String getMedName() { return medName; }
-    public void setMedName(String medName) { this.medName = medName; }
+    public String getdId() {
+        return dId;
+    }
 
-    public Date getDatePres() { return datePres; }
-    public void setDatePres(Date datePres) { this.datePres = datePres; }
+    public void setdId(String dId) {
+        this.dId = dId;
+    }
+
+    public String getMedName() {
+        return medName;
+    }
+
+    public void setMedName(String medName) {
+        this.medName = medName;
+    }
+
+    public Date getDatePres() {
+        return datePres;
+    }
+
+    public void setDatePres(Date datePres) {
+        this.datePres = datePres;
+    }
 
     @Override
     public String toString() {
-        return "Prescribed{" +
-                "pId='" + pId + '\'' +
-                ", dId='" + dId + '\'' +
-                ", medName='" + medName + '\'' +
-                ", datePres=" + datePres +
-                '}';
+        return "Prescribed{"
+                + "pId='" + pId + '\''
+                + ", dId='" + dId + '\''
+                + ", medName='" + medName + '\''
+                + ", datePres=" + datePres
+                + '}';
     }
 }

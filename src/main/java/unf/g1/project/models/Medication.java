@@ -13,7 +13,8 @@ public class Medication extends Model {
     private String description;         // Description (VARCHAR2(100))
 
     // Constructors
-    public Medication() {}
+    public Medication() {
+    }
 
     public Medication(String medName, String manufacturer, String description) {
         this.medName = medName;
@@ -56,21 +57,36 @@ public class Medication extends Model {
     }
 
     // Getters and Setters
-    public String getMedName() { return medName; }
-    public void setMedName(String medName) { this.medName = medName; }
+    public String getMedName() {
+        return medName;
+    }
 
-    public String getManufacturer() { return manufacturer; }
-    public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
+    public void setMedName(String medName) {
+        this.medName = medName;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @Override
     public String toString() {
-        return "Medication{" +
-                "medName='" + medName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "Medication{"
+                + "medName='" + medName + '\''
+                + ", manufacturer='" + manufacturer + '\''
+                + ", description='" + description + '\''
+                + '}';
     }
 }

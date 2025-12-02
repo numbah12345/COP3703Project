@@ -15,12 +15,9 @@ package unf.g1.project;
  *
  * @author Mohamed Bashiti
  */
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 
 public class main {
 
@@ -30,36 +27,28 @@ public class main {
         Connection connection = connectToDB();
         if (connection != null) {
             System.out.println("Connection success!");
-        }
-        else {
+        } else {
             System.out.println("Connection failed!");
             return;
         }
 
         Gui gui = new Gui(connection);
-        
-    }
 
+    }
 
     public static Connection connectToDB() {
         try {
             Connection conn = DriverManager.getConnection(
-                "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl", 
-                "G01", 
-                "r9Qi0oVD" 
+                    "jdbc:oracle:thin:@cisvm-oracle.unfcsd.unf.edu:1521:orcl",
+                    "G01",
+                    "r9Qi0oVD"
             );
             return conn;
-        } 
-        catch (SQLException e) {
-            System.out.println("\n\n\n\n" + e.getMessage()+ "\n\n\n\n");
+        } catch (SQLException e) {
+            System.out.println("\n\n\n\n" + e.getMessage() + "\n\n\n\n");
             return null;
         }
-        
+
     }
-    
-
-
 
 }
-
-

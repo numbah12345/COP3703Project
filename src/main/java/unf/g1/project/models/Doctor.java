@@ -23,11 +23,12 @@ public class Doctor extends Model {
     private String contactNo;           // Contact number (CHAR(10))
 
     // Constructors
-    public Doctor() {}
+    public Doctor() {
+    }
 
     public Doctor(String firstName, String lastName, String ssn, String doctorId,
-                  String addrs, String city, String zip, String dState,
-                  String phone, Date bDate, String contactNo) {
+            String addrs, String city, String zip, String dState,
+            String phone, Date bDate, String contactNo) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.ssn = ssn;
@@ -97,52 +98,112 @@ public class Doctor extends Model {
     }
 
     // Getters and Setters
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public Character getmInitial() { return mInitial; }
-    public void setmInitial(Character mInitial) { this.mInitial = mInitial; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public Character getmInitial() {
+        return mInitial;
+    }
 
-    public String getSsn() { return ssn; }
-    public void setSsn(String ssn) { this.ssn = ssn; }
+    public void setmInitial(Character mInitial) {
+        this.mInitial = mInitial;
+    }
 
-    public String getDoctorId() { return doctorId; }
-    public void setDoctorId(String doctorId) { this.doctorId = doctorId; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public String getAddrs() { return addrs; }
-    public void setAddrs(String addrs) { this.addrs = addrs; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public String getSsn() {
+        return ssn;
+    }
 
-    public String getZip() { return zip; }
-    public void setZip(String zip) { this.zip = zip; }
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
 
-    public String getdState() { return dState; }
-    public void setdState(String dState) { this.dState = dState; }
+    public String getDoctorId() {
+        return doctorId;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
 
-    public Date getbDate() { return bDate; }
-    public void setbDate(Date bDate) { this.bDate = bDate; }
+    public String getAddrs() {
+        return addrs;
+    }
 
-    public String getContactNo() { return contactNo; }
-    public void setContactNo(String contactNo) { this.contactNo = contactNo; }
+    public void setAddrs(String addrs) {
+        this.addrs = addrs;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getdState() {
+        return dState;
+    }
+
+    public void setdState(String dState) {
+        this.dState = dState;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Date getbDate() {
+        return bDate;
+    }
+
+    public void setbDate(Date bDate) {
+        this.bDate = bDate;
+    }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
 
     @Override
     public String toString() {
-        return "Doctor{" +
-                "doctorId=D'" + doctorId + '\'' +
-                ", name='" + firstName + " " + lastName + '\'' +
-                ", ssn='" + ssn + '\'' +
-                ", bDate=" + bDate +
-                ", phone='" + phone + '\'' +
-                ", contactNo='" + contactNo + '\'' +
-                ", address='" + addrs + ", " + city + ", " + dState + " " + zip + '\'' +
-                '}';
+        return "Doctor{"
+                + "doctorId=D'" + doctorId + '\''
+                + ", name='" + firstName + " " + lastName + '\''
+                + ", ssn='" + ssn + '\''
+                + ", bDate=" + bDate
+                + ", phone='" + phone + '\''
+                + ", contactNo='" + contactNo + '\''
+                + ", address='" + addrs + ", " + city + ", " + dState + " " + zip + '\''
+                + '}';
     }
 }

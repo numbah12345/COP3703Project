@@ -31,13 +31,14 @@ public class Patient extends Model {
     private String secDoc;              // Secondary doctor ID (VARCHAR2(12))
 
     // Constructors
-    public Patient() {}
+    public Patient() {
+    }
 
     public Patient(String fName, Character mInitial, String lName, String patientID,
-                   String ssn, String curPhoneNo, String curAddress, String curCity,
-                   Integer curZip, String curState, String perPhoneNo, String perAddress,
-                   String perCity, Integer perZip, String perState, Date bDate,
-                   Character sex, Character condition, String priDoc, String secDoc) {
+            String ssn, String curPhoneNo, String curAddress, String curCity,
+            Integer curZip, String curState, String perPhoneNo, String perAddress,
+            String perCity, Integer perZip, String perState, Date bDate,
+            Character sex, Character condition, String priDoc, String secDoc) {
         this.fName = fName;
         this.mInitial = mInitial;
         this.lName = lName;
@@ -107,16 +108,16 @@ public class Patient extends Model {
         System.out.println("DEBUG Patient.validate(): Starting validation");
 
         // Patient ID validation
-        System.out.println("DEBUG Patient.validate(): patientID = '" + patientID + "' (length: " +
-                         (patientID == null ? "null" : patientID.length()) + ")");
+        System.out.println("DEBUG Patient.validate(): patientID = '" + patientID + "' (length: "
+                + (patientID == null ? "null" : patientID.length()) + ")");
         if (patientID == null || patientID.length() != 8) {
             System.out.println("DEBUG Patient.validate(): FAILED - patientID must be exactly 8 characters");
             return false;
         }
 
         // SSN validation
-        System.out.println("DEBUG Patient.validate(): ssn = '" + ssn + "' (length: " +
-                         (ssn == null ? "null" : ssn.length()) + ")");
+        System.out.println("DEBUG Patient.validate(): ssn = '" + ssn + "' (length: "
+                + (ssn == null ? "null" : ssn.length()) + ")");
         if (ssn == null || ssn.length() != 9) {
             System.out.println("DEBUG Patient.validate(): FAILED - ssn must be exactly 9 characters");
             return false;
@@ -130,16 +131,16 @@ public class Patient extends Model {
         }
 
         // Current phone validation
-        System.out.println("DEBUG Patient.validate(): curPhoneNo = '" + curPhoneNo + "' (length: " +
-                         (curPhoneNo == null ? "null" : curPhoneNo.length()) + ")");
+        System.out.println("DEBUG Patient.validate(): curPhoneNo = '" + curPhoneNo + "' (length: "
+                + (curPhoneNo == null ? "null" : curPhoneNo.length()) + ")");
         if (curPhoneNo == null || curPhoneNo.length() != 10) {
             System.out.println("DEBUG Patient.validate(): FAILED - curPhoneNo must be exactly 10 characters");
             return false;
         }
 
         // Permanent phone validation
-        System.out.println("DEBUG Patient.validate(): perPhoneNo = '" + perPhoneNo + "' (length: " +
-                         (perPhoneNo == null ? "null" : perPhoneNo.length()) + ")");
+        System.out.println("DEBUG Patient.validate(): perPhoneNo = '" + perPhoneNo + "' (length: "
+                + (perPhoneNo == null ? "null" : perPhoneNo.length()) + ")");
         if (perPhoneNo == null || perPhoneNo.length() != 10) {
             System.out.println("DEBUG Patient.validate(): FAILED - perPhoneNo must be exactly 10 characters");
             return false;
@@ -164,81 +165,181 @@ public class Patient extends Model {
     }
 
     // Getters and Setters
-    public String getfName() { return fName; }
-    public void setfName(String fName) { this.fName = fName; }
+    public String getfName() {
+        return fName;
+    }
 
-    public Character getmInitial() { return mInitial; }
-    public void setmInitial(Character mInitial) { this.mInitial = mInitial; }
+    public void setfName(String fName) {
+        this.fName = fName;
+    }
 
-    public String getlName() { return lName; }
-    public void setlName(String lName) { this.lName = lName; }
+    public Character getmInitial() {
+        return mInitial;
+    }
 
-    public String getPatientID() { return patientID; }
-    public void setPatientID(String patientID) { this.patientID = patientID; }
+    public void setmInitial(Character mInitial) {
+        this.mInitial = mInitial;
+    }
 
-    public String getSsn() { return ssn; }
-    public void setSsn(String ssn) { this.ssn = ssn; }
+    public String getlName() {
+        return lName;
+    }
 
-    public String getCurPhoneNo() { return curPhoneNo; }
-    public void setCurPhoneNo(String curPhoneNo) { this.curPhoneNo = curPhoneNo; }
+    public void setlName(String lName) {
+        this.lName = lName;
+    }
 
-    public String getCurAddress() { return curAddress; }
-    public void setCurAddress(String curAddress) { this.curAddress = curAddress; }
+    public String getPatientID() {
+        return patientID;
+    }
 
-    public String getCurCity() { return curCity; }
-    public void setCurCity(String curCity) { this.curCity = curCity; }
+    public void setPatientID(String patientID) {
+        this.patientID = patientID;
+    }
 
-    public Integer getCurZip() { return curZip; }
-    public void setCurZip(Integer curZip) { this.curZip = curZip; }
+    public String getSsn() {
+        return ssn;
+    }
 
-    public String getCurState() { return curState; }
-    public void setCurState(String curState) { this.curState = curState; }
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
 
-    public String getPerPhoneNo() { return perPhoneNo; }
-    public void setPerPhoneNo(String perPhoneNo) { this.perPhoneNo = perPhoneNo; }
+    public String getCurPhoneNo() {
+        return curPhoneNo;
+    }
 
-    public String getPerAddress() { return perAddress; }
-    public void setPerAddress(String perAddress) { this.perAddress = perAddress; }
+    public void setCurPhoneNo(String curPhoneNo) {
+        this.curPhoneNo = curPhoneNo;
+    }
 
-    public String getPerCity() { return perCity; }
-    public void setPerCity(String perCity) { this.perCity = perCity; }
+    public String getCurAddress() {
+        return curAddress;
+    }
 
-    public Integer getPerZip() { return perZip; }
-    public void setPerZip(Integer perZip) { this.perZip = perZip; }
+    public void setCurAddress(String curAddress) {
+        this.curAddress = curAddress;
+    }
 
-    public String getPerState() { return perState; }
-    public void setPerState(String perState) { this.perState = perState; }
+    public String getCurCity() {
+        return curCity;
+    }
 
-    public Date getbDate() { return bDate; }
-    public void setbDate(Date bDate) { this.bDate = bDate; }
+    public void setCurCity(String curCity) {
+        this.curCity = curCity;
+    }
 
-    public Character getSex() { return sex; }
-    public void setSex(Character sex) { this.sex = sex; }
+    public Integer getCurZip() {
+        return curZip;
+    }
 
-    public Character getCondition() { return condition; }
-    public void setCondition(Character condition) { this.condition = condition; }
+    public void setCurZip(Integer curZip) {
+        this.curZip = curZip;
+    }
 
-    public String getPriDoc() { return priDoc; }
-    public void setPriDoc(String priDoc) { this.priDoc = priDoc; }
+    public String getCurState() {
+        return curState;
+    }
 
-    public String getSecDoc() { return secDoc; }
-    public void setSecDoc(String secDoc) { this.secDoc = secDoc; }
+    public void setCurState(String curState) {
+        this.curState = curState;
+    }
+
+    public String getPerPhoneNo() {
+        return perPhoneNo;
+    }
+
+    public void setPerPhoneNo(String perPhoneNo) {
+        this.perPhoneNo = perPhoneNo;
+    }
+
+    public String getPerAddress() {
+        return perAddress;
+    }
+
+    public void setPerAddress(String perAddress) {
+        this.perAddress = perAddress;
+    }
+
+    public String getPerCity() {
+        return perCity;
+    }
+
+    public void setPerCity(String perCity) {
+        this.perCity = perCity;
+    }
+
+    public Integer getPerZip() {
+        return perZip;
+    }
+
+    public void setPerZip(Integer perZip) {
+        this.perZip = perZip;
+    }
+
+    public String getPerState() {
+        return perState;
+    }
+
+    public void setPerState(String perState) {
+        this.perState = perState;
+    }
+
+    public Date getbDate() {
+        return bDate;
+    }
+
+    public void setbDate(Date bDate) {
+        this.bDate = bDate;
+    }
+
+    public Character getSex() {
+        return sex;
+    }
+
+    public void setSex(Character sex) {
+        this.sex = sex;
+    }
+
+    public Character getCondition() {
+        return condition;
+    }
+
+    public void setCondition(Character condition) {
+        this.condition = condition;
+    }
+
+    public String getPriDoc() {
+        return priDoc;
+    }
+
+    public void setPriDoc(String priDoc) {
+        this.priDoc = priDoc;
+    }
+
+    public String getSecDoc() {
+        return secDoc;
+    }
+
+    public void setSecDoc(String secDoc) {
+        this.secDoc = secDoc;
+    }
 
     @Override
     public String toString() {
-        return "Patient{" +
-                "patientID='" + patientID + '\'' +
-                ", name='" + fName + " " + mInitial + " " + lName + '\'' +
-                ", ssn='" + ssn + '\'' +
-                ", bDate=" + bDate +
-                ", sex=" + sex +
-                ", condition=" + condition +
-                ", curPhoneNo='" + curPhoneNo + '\'' +
-                ", currentAddress='" + curAddress + ", " + curCity + ", " + curState + " " + curZip + '\'' +
-                ", perPhoneNo='" + perPhoneNo + '\'' +
-                ", permanentAddress='" + perAddress + ", " + perCity + ", " + perState + " " + perZip + '\'' +
-                ", priDoc='" + priDoc + '\'' +
-                ", secDoc='" + secDoc + '\'' +
-                '}';
+        return "Patient{"
+                + "patientID='" + patientID + '\''
+                + ", name='" + fName + " " + mInitial + " " + lName + '\''
+                + ", ssn='" + ssn + '\''
+                + ", bDate=" + bDate
+                + ", sex=" + sex
+                + ", condition=" + condition
+                + ", curPhoneNo='" + curPhoneNo + '\''
+                + ", currentAddress='" + curAddress + ", " + curCity + ", " + curState + " " + curZip + '\''
+                + ", perPhoneNo='" + perPhoneNo + '\''
+                + ", permanentAddress='" + perAddress + ", " + perCity + ", " + perState + " " + perZip + '\''
+                + ", priDoc='" + priDoc + '\''
+                + ", secDoc='" + secDoc + '\''
+                + '}';
     }
 }
