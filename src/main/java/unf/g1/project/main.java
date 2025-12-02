@@ -13,7 +13,7 @@ package unf.g1.project;
 
 /**
  *
- * @author Mohamed Bashiti
+ * @author Mohamed Bashiti, Connor Barrett, Ethan Logsdon
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
